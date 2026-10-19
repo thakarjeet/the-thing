@@ -1,0 +1,2501 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>THE THING</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column, like a pocket attendance register.
+   Header, week strip, regularity card, then ruled lists. Tab bar fixed at the bottom. */
+:root {
+  --bg: #ECEFF4;
+  --surface: #F8F9FB;
+  --ink: #14213D;
+  --ink2: #51607F;
+  --line: #CBD3E0;
+  --accent: #F2B600;
+  --on-accent: #14213D;
+  --good: #1C7F55;
+  --good-soft: #D4EEE1;
+  --bad: #BF3328;
+  --bad-soft: #F6D9D5;
+  --warn: #8F5A06;
+  --warn-soft: #F8E8C6;
+  --h1: #F7E19A;
+  --h2: #F4C93A;
+  --h3: #E0A800;
+  --scrim: rgba(20, 33, 61, 0.45);
+  --f-display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --f-body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1420;
+    --surface: #172033;
+    --ink: #E8ECF4;
+    --ink2: #9AA6BE;
+    --line: #2B3650;
+    --accent: #FFC93C;
+    --on-accent: #0E1420;
+    --good: #4CC38A;
+    --good-soft: #14392B;
+    --bad: #FF7A6E;
+    --bad-soft: #43201D;
+    --warn: #E8B04B;
+    --warn-soft: #3B2E12;
+    --h1: #4A3D12;
+    --h2: #8F7010;
+    --h3: #FFC93C;
+    --scrim: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1420;
+  --surface: #172033;
+  --ink: #E8ECF4;
+  --ink2: #9AA6BE;
+  --line: #2B3650;
+  --accent: #FFC93C;
+  --on-accent: #0E1420;
+  --good: #4CC38A;
+  --good-soft: #14392B;
+  --bad: #FF7A6E;
+  --bad-soft: #43201D;
+  --warn: #E8B04B;
+  --warn-soft: #3B2E12;
+  --h1: #4A3D12;
+  --h2: #8F7010;
+  --h3: #FFC93C;
+  --scrim: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px 112px;
+  -webkit-text-size-adjust: 100%;
+}
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+h1, h2, h3, p { margin: 0; }
+.app { max-width: 560px; margin: 0 auto; }
+.mono { font-family: var(--f-mono); }
+.muted { color: var(--ink2); }
+
+/* header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; }
+.mark { font-family: var(--f-display); font-weight: 800; font-size: 30px; letter-spacing: 0.06em; line-height: 1; }
+.top-r { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.today-label { font-family: var(--f-mono); font-size: 12px; color: var(--ink2); white-space: nowrap; }
+.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; }
+.icon-btn svg, .tab svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.loading { padding: 48px 0; text-align: center; color: var(--ink2); font-family: var(--f-mono); font-size: 13px; }
+
+/* week strip */
+.week-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.week-head .lbl { font-family: var(--f-mono); font-size: 12px; color: var(--ink2); letter-spacing: 0.04em; text-transform: uppercase; }
+.week-head .ctl { display: flex; gap: 6px; }
+.small-btn { min-height: 32px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 16px; }
+.day { border: 1px solid var(--line); border-radius: 6px; padding: 6px 0 7px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: var(--surface); }
+.day .dow { font-family: var(--f-mono); font-size: 11px; color: var(--ink2); }
+.day .num { font-family: var(--f-display); font-weight: 700; font-size: 22px; line-height: 1; }
+.day .bar { width: 70%; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 3px; }
+.day .bar i { display: block; height: 100%; background: var(--good); }
+.day.today { border-color: var(--ink); border-width: 2px; padding: 5px 0 6px; }
+.day.sel { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.day.sel .dow { color: var(--on-accent); }
+.day.sel .bar { background: rgba(0, 0, 0, 0.18); }
+.day.sel .bar i { background: var(--on-accent); }
+
+/* cards and sections */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.banner { background: var(--warn-soft); color: var(--ink); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 14px; }
+.banner .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.section { margin-top: 22px; }
+.sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+.sec-h h2 { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.sec-h .cnt { font-family: var(--f-mono); font-size: 12px; color: var(--ink2); }
+.empty { padding: 18px 0; color: var(--ink2); font-size: 14px; }
+
+/* regularity score */
+.score { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.score-main { display: flex; flex-direction: column; min-width: 112px; }
+.score-num { font-family: var(--f-display); font-weight: 800; font-size: 88px; line-height: 0.85; letter-spacing: -0.01em; }
+.score-of { font-family: var(--f-mono); font-size: 12px; color: var(--ink2); margin-top: 6px; }
+.score-band { font-weight: 600; margin-top: 2px; }
+.score-meters { flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: 12px; }
+.mrow .mhead { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.mrow .mhead b { font-family: var(--f-mono); font-weight: 500; }
+.meter { position: relative; height: 8px; background: var(--line); border-radius: 4px; overflow: visible; }
+.meter i { display: block; height: 100%; border-radius: 4px; background: var(--ink); }
+.meter i.good { background: var(--good); }
+.meter i.warn { background: var(--warn); }
+.meter i.bad { background: var(--bad); }
+.meter .tick { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); }
+.score-note { margin-top: 12px; font-size: 13px; color: var(--ink2); }
+
+/* rows */
+.row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.row .grow { flex: 1; min-width: 0; }
+.row .name { font-weight: 600; font-size: 16px; overflow-wrap: anywhere; }
+.row .sub { font-size: 13px; color: var(--ink2); overflow-wrap: anywhere; }
+.row .time { font-family: var(--f-mono); font-size: 13px; color: var(--ink2); }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; margin-right: 6px; color: var(--ink2); }
+.pressable { cursor: pointer; }
+
+/* class rows with P / A / no class */
+.cls { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.cls-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.cls-top .name { font-weight: 600; font-size: 16px; overflow-wrap: anywhere; }
+.cls .sub { font-size: 13px; color: var(--ink2); margin-top: 1px; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+.seg button { min-height: 42px; border: 1px solid var(--line); border-radius: 6px; font-weight: 600; font-size: 14px; background: var(--surface); }
+.seg button.on-p { background: var(--good); border-color: var(--good); color: var(--bg); }
+.seg button.on-a { background: var(--bad); border-color: var(--bad); color: var(--bg); }
+.seg button.on-c { background: var(--ink2); border-color: var(--ink2); color: var(--bg); }
+
+/* habit rows */
+.check { width: 44px; height: 44px; border: 2px solid var(--ink); border-radius: 8px; display: grid; place-items: center; flex: none; background: var(--surface); }
+.check svg { width: 24px; height: 24px; fill: none; stroke: var(--on-accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.check.done { background: var(--accent); border-color: var(--accent); }
+.check.done svg { opacity: 1; }
+.streak { font-family: var(--f-mono); font-size: 13px; text-align: right; white-space: nowrap; }
+.streak b { font-family: var(--f-display); font-size: 24px; font-weight: 700; line-height: 1; margin-right: 2px; }
+.dots { display: flex; gap: 3px; margin-top: 6px; }
+.dots i { width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--line); }
+.dots i.d1 { background: var(--h3); border-color: var(--h3); }
+.dots i.d0 { background: transparent; }
+.dots i.off { opacity: 0.35; background: var(--line); border-color: var(--line); }
+
+/* heat map */
+.heat { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
+.heat .hd { font-family: var(--f-mono); font-size: 11px; color: var(--ink2); text-align: center; }
+.heat i { aspect-ratio: 1; max-height: 38px; width: 100%; border-radius: 4px; border: 1px solid var(--line); display: block; }
+.heat i.l1 { background: var(--h1); border-color: var(--h1); }
+.heat i.l2 { background: var(--h2); border-color: var(--h2); }
+.heat i.l3 { background: var(--h3); border-color: var(--h3); }
+.heat i.none { border-style: dashed; opacity: 0.5; }
+.heat i.future { opacity: 0.25; }
+.heat i.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+/* timetable chips */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { min-height: 40px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); font-size: 14px; font-weight: 500; }
+.chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip small { font-family: var(--f-mono); font-size: 11px; margin-left: 4px; opacity: 0.8; }
+.day-h { margin-top: 18px; font-family: var(--f-display); font-weight: 700; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* attendance */
+.pct { font-family: var(--f-display); font-weight: 800; font-size: 44px; line-height: 0.9; }
+.pct small { font-size: 22px; font-weight: 700; }
+.att { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.att-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.att .counts { font-family: var(--f-mono); font-size: 12px; color: var(--ink2); }
+.att .meter { margin: 10px 0 8px; }
+.pill { display: inline-block; font-size: 13px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.none { background: var(--line); color: var(--ink2); }
+.pill.info { background: var(--line); color: var(--ink); }
+
+/* buttons and forms */
+.btn { min-height: 44px; padding: 8px 16px; border: 1px solid var(--ink); border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.danger { border-color: var(--bad); color: var(--bad); }
+.btn.quiet { border-color: var(--line); font-weight: 500; }
+.btn.block { width: 100%; }
+.add-bar { margin-top: 14px; }
+label.f { display: block; margin-top: 14px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+input[type="text"], input[type="number"], input[type="time"], input[type="date"], select {
+  display: block; width: 100%; margin-top: 6px; min-height: 44px; padding: 8px 10px;
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.hint { font-size: 13px; color: var(--ink2); margin-top: 6px; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.btn-row .btn { flex: 1; min-width: 110px; }
+
+/* course colour square, mentor notes, ask box */
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 8px; vertical-align: baseline; }
+.greet { font-family: var(--f-display); font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: 0.02em; margin-top: 6px; text-wrap: balance; }
+.note { padding: 12px 0; border-top: 1px solid var(--line); margin-top: 12px; }
+.note:first-of-type { margin-top: 14px; }
+.note-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.note-h b { font-size: 16px; }
+.note p { margin-top: 6px; color: var(--ink); font-size: 15px; overflow-wrap: anywhere; }
+.qa { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.qa .q { font-weight: 600; overflow-wrap: anywhere; }
+.qa .a { margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* tab bar */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--surface); border-top: 1px solid var(--line);
+  padding: 0 max(16px, env(safe-area-inset-left, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-right, 0px)); }
+.tabs-in { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.tab { min-height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--ink2); border-top: 3px solid transparent; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.02em; text-transform: uppercase; }
+.tab.on { color: var(--ink); border-top-color: var(--accent); }
+
+/* sheet */
+.scrim { position: fixed; inset: 0; z-index: 40; background: var(--scrim); }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 90%; overflow-y: auto; background: var(--surface); border-top: 1px solid var(--line); border-radius: 14px 14px 0 0;
+  padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.sheet-in { max-width: 560px; margin: 0 auto; }
+.sheet h2 { font-family: var(--f-display); font-weight: 800; font-size: 28px; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.05; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 50; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); }
+
+@media (min-width: 640px) {
+  .sheet { left: 50%; right: auto; width: 600px; transform: translateX(-50%); border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<div class="app">
+  <header class="top">
+    <div class="mark">THE THING</div>
+    <div class="top-r">
+      <span class="today-label" id="todayLabel"></span>
+      <button class="icon-btn" id="btnSettings" aria-label="Settings" data-act="settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="loading" id="loading">Opening your register...</div>
+  <main id="view" hidden></main>
+</div>
+
+<nav class="tabs" id="tabs" hidden>
+  <div class="tabs-in">
+    <button class="tab on" data-act="tab" data-tab="day">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg>
+      <span>Today</span>
+    </button>
+    <button class="tab" data-act="tab" data-tab="mentor">
+      <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"></path><path d="M8.5 9.5h7M8.5 12.5h4"></path></svg>
+      <span>Mentor</span>
+    </button>
+    <button class="tab" data-act="tab" data-tab="habits">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg>
+      <span>Habits</span>
+    </button>
+    <button class="tab" data-act="tab" data-tab="timetable">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 4v16M15 4v16"></path></svg>
+      <span>Timetable</span>
+    </button>
+    <button class="tab" data-act="tab" data-tab="attendance">
+      <svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"></path></svg>
+      <span>Attendance</span>
+    </button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" hidden data-act="closeSheet"></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Editor"><div class="sheet-in" id="sheetIn"></div></div>
+<div class="toast" id="toast" hidden></div>
+<script>
+/* ---------- basics: dates and small helpers ---------- */
+var DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
+var DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+var DAY_LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var DAY_LETTER = ["S", "M", "T", "W", "T", "F", "S"];
+var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+var KINDS = ["Lecture", "Practical", "Tutorial", "Personal"];
+var LOCAL_KEY = "the-thing-v1";
+var DATA_VERSION = 2;
+var PORTAL_DATE = "2026-10-18";
+
+function pad(n) {
+  if (n < 10) { return "0" + n; }
+  return "" + n;
+}
+function dateKey(d) {
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+}
+function parseKey(k) {
+  var p = k.split("-");
+  return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+}
+function addDays(d, n) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+}
+function today() {
+  var n = new Date();
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+function nowClock() {
+  var n = new Date();
+  return pad(n.getHours()) + ":" + pad(n.getMinutes());
+}
+function startOfWeek(d) {
+  var back = (d.getDay() + 6) % 7;
+  return addDays(d, -back);
+}
+function niceDate(d) {
+  return d.getDate() + " " + MONTHS[d.getMonth()];
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function percent(a, b) {
+  if (b === 0) { return null; }
+  return Math.round((100 * a) / b);
+}
+function plural(n, word) {
+  if (n === 1) { return n + " " + word; }
+  var ending = "s";
+  if (word.charAt(word.length - 1) === "s") { ending = "es"; }
+  return n + " " + word + ending;
+}
+
+/* ---------- the saved data ---------- */
+var state = null;
+
+function newId(prefix) {
+  state.nextId = state.nextId + 1;
+  return prefix + state.nextId;
+}
+
+function blankState() {
+  return {
+    v: DATA_VERSION, name: "", target: 75, makeup: false, sample: false, nextId: 100,
+    subjects: [], slots: [], habits: [], habitLog: {}, attLog: {}
+  };
+}
+
+/* Fill in anything an older save is missing. */
+function normalise(s) {
+  var b = blankState();
+  for (var key in b) {
+    if (s[key] === undefined || s[key] === null) { s[key] = b[key]; }
+  }
+  for (var i = 0; i < s.subjects.length; i++) {
+    var sub = s.subjects[i];
+    if (!sub.short) { sub.short = sub.name; }
+    if (!sub.color) { sub.color = "#51607F"; }
+    if (!sub.total) { sub.total = 0; }
+    if (!sub.baseDate) { sub.baseDate = s.baseDate || ""; }
+  }
+  for (var j = 0; j < s.slots.length; j++) {
+    var sl = s.slots[j];
+    if (!sl.span) { sl.span = 1; }
+    if (!sl.teacher) { sl.teacher = ""; }
+    if (sl.kind === "Lab") { sl.kind = "Practical"; }
+  }
+  return s;
+}
+
+/* The real data: Jeet's SR University timetable and the portal counts from 18 Oct 2026. */
+function portalState() {
+  state = blankState();
+  state.name = "Jeet";
+  state.nextId = 200;
+
+  var courses = [
+    ["u1", "AI Assisted Problem Solving using Python", "AI Python", "#8A4FE0", 72, 47, 37],
+    ["u2", "Heritage, Democracy and Ecology", "Heritage", "#F0902B", 36, 25, 18],
+    ["u3", "Calculus and Differential Equations", "Calculus", "#E0473D", 48, 31, 26],
+    ["u4", "Applied Physics", "Physics", "#3B6FF0", 60, 40, 34],
+    ["u5", "Computational Biology", "Comp Bio", "#22A55A", 60, 40, 36]
+  ];
+  for (var i = 0; i < courses.length; i++) {
+    var c = courses[i];
+    state.subjects.push({ id: c[0], name: c[1], short: c[2], color: c[3], total: c[4], baseHeld: c[5], baseAttended: c[6], baseDate: PORTAL_DATE });
+  }
+
+  var r8008 = "Room 8008, Block 8, Ground Floor";
+  var r10104 = "Room 10104, Block 10, First Floor";
+  /* day, start, end, kind, subject, classes it counts as, teacher, room */
+  var plan = [
+    [1, "08:30", "09:30", "Lecture", "u3", 1, "Dr. Anupam Khatua", r8008],
+    [1, "09:30", "10:30", "Lecture", "u2", 1, "Dr. Lakshmanareddy N", r10104],
+    [1, "10:30", "11:30", "Lecture", "u5", 1, "Dr. Ravinder Kandi", r8008],
+    [1, "12:30", "14:30", "Practical", "u5", 2, "Mr. Pothuganti Jithendar", "Room 8002, Block 8, Ground Floor"],
+    [2, "08:30", "09:30", "Tutorial", "u3", 1, "Dr. Anupam Khatua", r8008],
+    [2, "12:30", "14:30", "Practical", "u1", 2, "Dr. Priya Srivastava", "Room 8102, Block 8, First Floor"],
+    [2, "14:30", "15:30", "Lecture", "u3", 1, "Dr. Anupam Khatua", r8008],
+    [3, "08:30", "09:30", "Lecture", "u5", 1, "Dr. Ravinder Kandi", r8008],
+    [3, "09:30", "10:30", "Lecture", "u1", 1, "Dr. Nirapada Santra", r8008],
+    [3, "10:30", "11:30", "Lecture", "u2", 1, "Dr. Lakshmanareddy N", r10104],
+    [3, "11:30", "12:30", "Lecture", "u3", 1, "Dr. Anupam Khatua", r8008],
+    [3, "14:30", "15:30", "Lecture", "u4", 1, "Dr. Srishailam K", r8008],
+    [4, "08:30", "09:30", "Lecture", "u4", 1, "Dr. Srishailam K", r8008],
+    [4, "09:30", "10:30", "Lecture", "u5", 1, "Dr. Ravinder Kandi", r8008],
+    [4, "10:30", "12:30", "Practical", "u4", 2, "Dr. Akash", "Room 3112, Block 3, First Floor"],
+    [4, "14:30", "15:30", "Lecture", "u1", 1, "Dr. Nirapada Santra", r8008],
+    [5, "09:30", "10:30", "Lecture", "u2", 1, "Dr. Lakshmanareddy N", r10104],
+    [5, "10:30", "12:30", "Practical", "u1", 2, "Dr. Nirapada Santra", "Room 8101, Block 8, First Floor"],
+    [5, "13:30", "14:30", "Lecture", "u4", 1, "Dr. Srishailam K", r8008],
+    [5, "15:30", "16:30", "Lecture", "u3", 1, "Dr. Anupam Khatua", r8008]
+  ];
+  for (var j = 0; j < plan.length; j++) {
+    var p = plan[j];
+    state.slots.push({ id: "s" + (j + 1), day: p[0], start: p[1], end: p[2], kind: p[3], sub: p[4], span: p[5], title: "", teacher: p[6], room: p[7] });
+  }
+  return state;
+}
+
+/* ---------- habits ---------- */
+function habitDone(key, hid) {
+  var list = state.habitLog[key];
+  if (!list) { return false; }
+  return list.indexOf(hid) >= 0;
+}
+function addHabitLog(key, hid, on) {
+  var list = state.habitLog[key];
+  if (!list) { list = []; }
+  var at = list.indexOf(hid);
+  if (on && at < 0) { list.push(hid); }
+  if (!on && at >= 0) { list.splice(at, 1); }
+  if (list.length === 0) { delete state.habitLog[key]; } else { state.habitLog[key] = list; }
+}
+function habitScheduled(h, date) {
+  if (h.days.indexOf(date.getDay()) < 0) { return false; }
+  return dateKey(date) >= h.created;
+}
+function habitStreak(h) {
+  var t = today();
+  var streak = 0;
+  for (var i = 0; i < 400; i++) {
+    var day = addDays(t, -i);
+    var k = dateKey(day);
+    if (k < h.created) { break; }
+    if (h.days.indexOf(day.getDay()) < 0) { continue; }
+    if (habitDone(k, h.id)) {
+      streak = streak + 1;
+    } else if (i > 0) {
+      break;
+    }
+  }
+  return streak;
+}
+function habitRate(h, nDays) {
+  var t = today();
+  var due = 0;
+  var done = 0;
+  for (var i = 0; i < nDays; i++) {
+    var day = addDays(t, -i);
+    if (habitScheduled(h, day)) {
+      due = due + 1;
+      if (habitDone(dateKey(day), h.id)) { done = done + 1; }
+    }
+  }
+  return percent(done, due);
+}
+function dayHabitCount(date) {
+  var due = 0;
+  var done = 0;
+  for (var i = 0; i < state.habits.length; i++) {
+    var h = state.habits[i];
+    if (habitScheduled(h, date)) {
+      due = due + 1;
+      if (habitDone(dateKey(date), h.id)) { done = done + 1; }
+    }
+  }
+  return { due: due, done: done };
+}
+
+/* ---------- timetable ---------- */
+function findSubject(id) {
+  for (var i = 0; i < state.subjects.length; i++) {
+    if (state.subjects[i].id === id) { return state.subjects[i]; }
+  }
+  return null;
+}
+function findSlot(id) {
+  for (var i = 0; i < state.slots.length; i++) {
+    if (state.slots[i].id === id) { return state.slots[i]; }
+  }
+  return null;
+}
+function findHabit(id) {
+  for (var i = 0; i < state.habits.length; i++) {
+    if (state.habits[i].id === id) { return state.habits[i]; }
+  }
+  return null;
+}
+function slotsOnDay(dayNumber) {
+  var out = [];
+  for (var i = 0; i < state.slots.length; i++) {
+    if (state.slots[i].day === dayNumber) { out.push(state.slots[i]); }
+  }
+  out.sort(function (a, b) {
+    if (a.start < b.start) { return -1; }
+    if (a.start > b.start) { return 1; }
+    return 0;
+  });
+  return out;
+}
+function classSlotsOn(date) {
+  var all = slotsOnDay(date.getDay());
+  var out = [];
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].kind !== "Personal" && !slotOff(dateKey(date), all[i])) { out.push(all[i]); }
+  }
+  return out;
+}
+function slotName(slot) {
+  if (slot.kind === "Personal") { return slot.title || "Personal"; }
+  var sub = findSubject(slot.sub);
+  if (sub) { return sub.name; }
+  return "Class";
+}
+function slotShort(slot) {
+  if (slot.kind === "Personal") { return slot.title || "Personal"; }
+  var sub = findSubject(slot.sub);
+  if (sub) { return sub.short; }
+  return "Class";
+}
+function subjectColor(subId) {
+  var sub = findSubject(subId);
+  if (sub) { return sub.color; }
+  return "#51607F";
+}
+function nice12(hhmm) {
+  var h = Number(hhmm.substring(0, 2));
+  var m = hhmm.substring(3, 5);
+  var suffix = "AM";
+  if (h >= 12) { suffix = "PM"; }
+  if (h > 12) { h = h - 12; }
+  if (h === 0) { h = 12; }
+  return h + ":" + m + " " + suffix;
+}
+
+/* ---------- attendance marks ----------
+   Each mark is saved as text: a letter (P present, A absent, C no class), the number of
+   classes it counts as when that is more than one (a 2-hour practical), then the subject. */
+function makeEntry(mark, span, subId) {
+  if (span > 1) { return mark + span + ":" + subId; }
+  return mark + subId;
+}
+function parseEntry(text) {
+  var mark = text.charAt(0);
+  var rest = text.substring(1);
+  var at = rest.indexOf(":");
+  if (at > 0) { return { mark: mark, span: Number(rest.substring(0, at)), sub: rest.substring(at + 1) }; }
+  return { mark: mark, span: 1, sub: rest };
+}
+function getMark(key, slotId) {
+  var day = state.attLog[key];
+  if (!day || !day[slotId]) { return ""; }
+  return day[slotId].charAt(0);
+}
+function setMark(key, slot, mark) {
+  if (getMark(key, slot.id) === mark) { mark = ""; }
+  if (!state.attLog[key]) { state.attLog[key] = {}; }
+  if (mark === "") {
+    delete state.attLog[key][slot.id];
+    if (Object.keys(state.attLog[key]).length === 0) { delete state.attLog[key]; }
+  } else {
+    state.attLog[key][slot.id] = makeEntry(mark, slot.span || 1, slot.sub);
+  }
+}
+/* Each course's starting counts come from the portal on a certain date. Marks on or before that
+   date are already inside those counts, so they are not added a second time. */
+function isLocked(key, subId) {
+  var sub = findSubject(subId);
+  if (!sub) { return false; }
+  return key <= sub.baseDate;
+}
+function latestBase() {
+  var latest = "";
+  for (var i = 0; i < state.subjects.length; i++) {
+    if (state.subjects[i].baseDate > latest) { latest = state.subjects[i].baseDate; }
+  }
+  return latest;
+}
+
+/* held and attended for every subject: portal counts plus everything marked after the portal date */
+function allCounts() {
+  var counts = {};
+  for (var i = 0; i < state.subjects.length; i++) {
+    var s = state.subjects[i];
+    counts[s.id] = { held: s.baseHeld, att: s.baseAttended };
+  }
+  for (var key in state.attLog) {
+    var day = state.attLog[key];
+    for (var slotId in day) {
+      var e = parseEntry(day[slotId]);
+      if (!counts[e.sub]) { continue; }
+      if (isLocked(key, e.sub)) { continue; }
+      if (e.mark === "P") { counts[e.sub].held += e.span; counts[e.sub].att += e.span; }
+      if (e.mark === "A") { counts[e.sub].held += e.span; }
+    }
+  }
+  return counts;
+}
+
+/* How many classes can be missed, or must be attended, to sit at the target right now.
+   Whole numbers only, so there are no rounding surprises. */
+function attendancePlan(att, held, target) {
+  if (held === 0) { return { kind: "none", n: 0 }; }
+  if (att * 100 >= target * held) {
+    return { kind: "safe", n: Math.floor((att * 100) / target) - held };
+  }
+  if (target >= 100) { return { kind: "short", n: -1 }; }
+  return { kind: "short", n: Math.ceil((target * held - 100 * att) / (100 - target)) };
+}
+
+/* One record per subject: where it stands now and what the rest of the semester allows. */
+function subjectStats() {
+  var counts = allCounts();
+  var out = [];
+  for (var i = 0; i < state.subjects.length; i++) {
+    var s = state.subjects[i];
+    var c = counts[s.id];
+    var st = { sub: s, held: c.held, att: c.att, total: s.total, pct: percent(c.att, c.held) };
+    st.run = attendancePlan(c.att, c.held, state.target);
+    st.hasTotal = (s.total > 0 && s.total >= c.held);
+    st.remaining = 0;
+    st.needTotal = 0;
+    st.mustAttend = 0;
+    st.canReach = true;
+    st.canMiss = 0;
+    if (st.hasTotal) {
+      st.remaining = s.total - c.held;
+      st.needTotal = Math.floor((state.target * s.total + 99) / 100);
+      st.mustAttend = Math.max(0, st.needTotal - c.att);
+      st.canReach = (c.att + st.remaining >= st.needTotal);
+      if (st.canReach) { st.canMiss = st.remaining - st.mustAttend; } else { st.canMiss = -1; }
+    }
+    st.level = statLevel(st);
+    out.push(st);
+  }
+  return out;
+}
+function statLevel(st) {
+  if (st.run.kind === "none") { return "none"; }
+  if (st.run.kind === "short") { return "bad"; }
+  if (st.hasTotal && !st.canReach) { return "bad"; }
+  if (st.run.n <= 2) { return "warn"; }
+  if (st.hasTotal && st.canMiss <= 3) { return "warn"; }
+  return "good";
+}
+function levelLabel(st) {
+  if (st.level === "bad") {
+    if (st.run.kind === "short") { return "Below " + state.target + "%"; }
+    return "At risk";
+  }
+  if (st.level === "warn") { return "Tight"; }
+  if (st.level === "good") { return "Safe"; }
+  return "No data";
+}
+function nowText(st) {
+  var t = state.target;
+  if (st.run.kind === "short") {
+    if (st.run.n < 0) { return "Cannot be recovered at a " + t + "% target."; }
+    if (st.run.n === 1) { return "Attend the next class to get back to " + t + "%."; }
+    return "Attend the next " + st.run.n + " classes in a row to get back to " + t + "%.";
+  }
+  if (st.run.kind === "safe") {
+    if (st.run.n === 0) { return "No spare class right now. Do not miss the next one."; }
+    return "You can miss " + plural(st.run.n, "class") + " and still stay at " + t + "% right now.";
+  }
+  return "No classes counted yet.";
+}
+function endText(st) {
+  if (!st.hasTotal) { return ""; }
+  if (st.remaining === 0) { return "The semester's classes are all done."; }
+  if (!st.canReach) {
+    return "Even if you attend all " + st.remaining + " classes left, you end below " + state.target + "%. Speak to your mentoring staff soon.";
+  }
+  return "Of the " + st.remaining + " classes left, attend at least " + st.mustAttend + ". That leaves " + plural(st.canMiss, "spare class") + " for the whole semester.";
+}
+function levelRank(level) {
+  if (level === "bad") { return 0; }
+  if (level === "warn") { return 1; }
+  if (level === "good") { return 2; }
+  return 3;
+}
+function sortedStats() {
+  var list = subjectStats();
+  list.sort(function (a, b) {
+    var ra = levelRank(a.level);
+    var rb = levelRank(b.level);
+    if (ra !== rb) { return ra - rb; }
+    var pa = a.pct;
+    var pb = b.pct;
+    if (pa === null) { pa = 101; }
+    if (pb === null) { pb = 101; }
+    return pa - pb;
+  });
+  return list;
+}
+function overallStats() {
+  var list = subjectStats();
+  var held = 0;
+  var att = 0;
+  for (var i = 0; i < list.length; i++) { held += list[i].held; att += list[i].att; }
+  return { held: held, att: att, pct: percent(att, held), run: attendancePlan(att, held, state.target) };
+}
+
+/* ---------- regularity score (last 7 days, today included) ---------- */
+function weekHabitRate() {
+  var t = today();
+  var due = 0;
+  var done = 0;
+  for (var i = 0; i < 7; i++) {
+    var c = dayHabitCount(addDays(t, -i));
+    due = due + c.due;
+    done = done + c.done;
+  }
+  return percent(done, due);
+}
+function weekAttendanceRate() {
+  var t = today();
+  var held = 0;
+  var att = 0;
+  for (var i = 0; i < 7; i++) {
+    var day = state.attLog[dateKey(addDays(t, -i))];
+    if (!day) { continue; }
+    for (var slotId in day) {
+      var e = parseEntry(day[slotId]);
+      if (e.mark === "P") { held += e.span; att += e.span; }
+      if (e.mark === "A") { held += e.span; }
+    }
+  }
+  return percent(att, held);
+}
+function regularityScore(hr, ar) {
+  if (hr === null && ar === null) { return null; }
+  if (hr === null) { return ar; }
+  if (ar === null) { return hr; }
+  return Math.round((hr + ar) / 2);
+}
+function scoreBand(score) {
+  if (score === null) { return "No data yet"; }
+  if (score >= 85) { return "Locked in"; }
+  if (score >= 65) { return "Steady"; }
+  if (score >= 40) { return "Slipping"; }
+  return "Restart today";
+}
+</script>
+<script>
+/* ---------- academic calendar: SR University, odd semester 2026-27 (UG column of the PDF) ----------
+   H = holiday, X = exam days (no regular classes). Mon-Fri 4 Aug to 28 Nov are teaching days unless listed. */
+var CAL = {
+  start: "2026-08-04", end: "2026-11-28",
+  off: {
+    "2026-08-15": ["H", "Independence Day"], "2026-08-26": ["H", "Eid Miladun Nabi"],
+    "2026-08-27": ["H", "Holiday declared (19 Sep is the working day in lieu)"], "2026-08-28": ["H", "Raksha Bandhan"],
+    "2026-08-29": ["H", "National Sports Day"], "2026-09-04": ["H", "Sri Krishna Astami"],
+    "2026-09-05": ["H", "Teachers' Day holiday (26 Sep is the working day in lieu)"], "2026-09-14": ["H", "Vinayaka Chaturthi"],
+    "2026-09-25": ["X", "Mid-Term Exam"], "2026-09-26": ["X", "Mid-Term Exam"], "2026-09-28": ["X", "Mid-Term Exam"],
+    "2026-09-29": ["X", "Mid-Term Exam"], "2026-09-30": ["X", "Mid-Term Exam"], "2026-10-01": ["X", "Mid-Term Exam"],
+    "2026-10-02": ["H", "Gandhi Jayanti"], "2026-10-03": ["H", "Holiday declared (10 Oct is the working day in lieu)"],
+    "2026-10-19": ["H", "Durga Ashtami"], "2026-10-20": ["H", "Dusshera"], "2026-10-21": ["H", "Dusshera holidays"],
+    "2026-10-22": ["H", "Dusshera holidays"], "2026-10-23": ["H", "Dusshera holidays"],
+    "2026-11-07": ["H", "Holiday declared (14 Nov is the working day in lieu)"], "2026-11-08": ["H", "Deepavali"],
+    "2026-11-23": ["H", "Holiday declared (28 Nov is the working day in lieu)"], "2026-11-24": ["H", "Guru Nanak Jayanti"]
+  },
+  win: {}, mk: {}
+};
+(function () {
+  var club = ["2026-08-10", "2026-09-01", "2026-10-07", "2026-11-05"];
+  for (var i = 0; i < club.length; i++) { CAL.win[club[i]] = ["11:00", "17:00", "Club Activities"]; }
+  var mk = ["2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02"];
+  for (var j = 0; j < mk.length; j++) { CAL.mk[mk[j]] = ["09:00", "11:00", "Mid-term make-up tests"]; }
+})();
+
+function dayInfo(key) {
+  var o = CAL.off[key];
+  if (o) { return { kind: o[0] === "X" ? "exam" : "holiday", label: o[1] }; }
+  var wd = parseKey(key).getDay();
+  if (wd === 0 || wd === 6) { return { kind: "weekend", label: "Weekend" }; }
+  if (key < CAL.start) { return { kind: "break", label: "The semester had not started (classes began 4 Aug 2026)" }; }
+  if (key > CAL.end) {
+    if (key <= "2026-12-05") { return { kind: "exam", label: "End-term exams (30 Nov to 5 Dec)" }; }
+    if (key < "2027-01-04") { return { kind: "break", label: "Results and make-up exams, no regular classes" }; }
+    return { kind: "break", label: "The even-semester calendar is not loaded in the app yet" };
+  }
+  return { kind: "teach", label: "Teaching day", win: CAL.win[key] || (state && state.makeup && CAL.mk[key]) || null };
+}
+/* Why a slot does not count on a date ("" means it counts). */
+function slotOff(key, slot) {
+  if (slot.kind === "Personal") { return ""; }
+  var inf = dayInfo(key);
+  if (inf.kind !== "teach") { return inf.label; }
+  var w = inf.win;
+  if (w && slot.start < w[1] && slot.end > w[0]) { return "No classes " + nice12(w[0]) + " to " + nice12(w[1]) + " (" + w[2] + ")"; }
+  return "";
+}
+function calLeft(subId) {
+  var n = 0;
+  var t = today();
+  for (var i = 0; i < 80; i++) {
+    var d = addDays(t, i);
+    if (dateKey(d) > CAL.end) { break; }
+    var list = classSlotsOn(d);
+    for (var j = 0; j < list.length; j++) {
+      if (list[j].sub !== subId) { continue; }
+      if (i === 0 && list[j].end <= nowClock()) { continue; }
+      n += list[j].span || 1;
+    }
+  }
+  return n;
+}
+function isOffWeekday(d) {
+  var wd = d.getDay();
+  var k = dateKey(d);
+  if (wd === 0 || wd === 6 || k < CAL.start || k > CAL.end) { return false; }
+  return dayInfo(k).kind !== "teach";
+}
+function fmtD(d) { return DAY_SHORT[d.getDay()] + " " + niceDate(d); }
+function whenText(d) { var n = daysTo(dateKey(d)); return n <= 1 ? dayWord(d) + " (" + fmtD(d) + ")" : dayWord(d); }
+function daysTo(key) { return Math.round((parseKey(key).getTime() - today().getTime()) / 86400000); }
+/* the next run of weekday holidays or exam days, and when classes come back */
+function calNote() {
+  var t = today();
+  for (var i = 0; i < 21; i++) {
+    var d = addDays(t, i);
+    if (!isOffWeekday(d)) { continue; }
+    var last = d;
+    var labels = [dayInfo(dateKey(d)).label];
+    for (var j = 1; j < 14; j++) {
+      var e = addDays(d, j);
+      if (e.getDay() === 0 || e.getDay() === 6) { continue; }
+      if (!isOffWeekday(e)) { break; }
+      last = e;
+      var lb = dayInfo(dateKey(e)).label;
+      if (labels.indexOf(lb) < 0) { labels.push(lb); }
+    }
+    var nxt = addDays(last, 1);
+    while (nxt.getDay() === 0 || nxt.getDay() === 6) { nxt = addDays(nxt, 1); }
+    var span = fmtD(d);
+    if (dateKey(last) !== dateKey(d)) { span += " to " + fmtD(last); }
+    var tail = dateKey(nxt) > CAL.end ? " That is the last stretch before end-term exams." : " Classes resume " + fmtD(nxt) + ".";
+    return { level: "info", title: i === 0 ? "No classes today" : "No classes ahead", text: span + ": " + labels.join(", ") + ". Attendance counting is paused." + tail };
+  }
+  return null;
+}
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden && typeof store !== "undefined" && store.dirty) { flush(); }
+});
+
+/* ---------- the mentor bot: offline, answers from your real numbers and the calendar ---------- */
+var BOT_CHIPS = ["Can I skip tomorrow?", "How is my attendance?", "Next holiday?", "What is on this week?", "When are exams?", "How do I use this app?"];
+var bot = { last: "" };
+var ALIAS = { "ai python": ["python", "ai"], heritage: ["heritage", "democracy", "ecology"], calculus: ["calculus", "maths", "math", "differential"], physics: ["physics"], "comp bio": ["bio", "biology", "computational"] };
+
+function statOf(id) {
+  var l = subjectStats();
+  for (var i = 0; i < l.length; i++) { if (l[i].sub.id === id) { return l[i]; } }
+  return null;
+}
+function findCourse(q) {
+  for (var i = 0; i < state.subjects.length; i++) {
+    var s = state.subjects[i];
+    var words = (ALIAS[s.short.toLowerCase()] || []).concat([s.short.toLowerCase()]);
+    for (var j = 0; j < words.length; j++) {
+      if (new RegExp("\\b" + words[j] + (words[j].length < 4 ? "\\b" : "")).test(q)) { return s; }
+    }
+  }
+  return null;
+}
+function pickDate(q) {
+  var t = today();
+  if (/day after tomorrow/.test(q)) { return addDays(t, 2); }
+  if (/tomorrow/.test(q)) { return addDays(t, 1); }
+  if (/\b(today|tonight)\b/.test(q)) { return t; }
+  var mons = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  var M = "(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t|tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)";
+  var dd = 0;
+  var mi = -1;
+  var m = q.match(new RegExp("\\b(\\d{1,2})(?:st|nd|rd|th)?\\s*(?:of\\s+)?" + M + "\\b"));
+  if (m) { dd = Number(m[1]); mi = mons.indexOf(m[2].substring(0, 3)); }
+  else {
+    m = q.match(new RegExp("\\b" + M + "\\.?\\s*(\\d{1,2})\\b"));
+    if (m) { dd = Number(m[2]); mi = mons.indexOf(m[1].substring(0, 3)); }
+  }
+  if (mi >= 0 && dd >= 1 && dd <= 31) { return new Date(mi === 0 ? 2027 : 2026, mi, dd); }
+  m = q.match(/\b(sun|mon|tue|wed|thu|fri|sat)(?:day|sday|nesday|rsday|urday|s)?\b/);
+  if (m) {
+    var wd = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"].indexOf(m[1]);
+    return addDays(t, (wd - t.getDay() + 7) % 7);
+  }
+  return null;
+}
+function dayLine(d) {
+  var inf = dayInfo(dateKey(d));
+  if (inf.kind === "teach") {
+    if (inf.win) { return fmtD(d) + ": teaching day, but no classes " + nice12(inf.win[0]) + " to " + nice12(inf.win[1]) + " (" + inf.win[2] + ")."; }
+    return fmtD(d) + ": regular teaching day.";
+  }
+  return fmtD(d) + ": " + inf.label + ". No regular classes, so attendance counting is paused.";
+}
+function lineFor(st) {
+  return "- " + st.sub.short + ": " + (st.pct === null ? "--" : st.pct + "%") + " (" + st.att + " of " + st.held + "), " + levelLabel(st);
+}
+
+function ansHello(q) {
+  if (/thank|thanks/.test(q)) { return "Anytime. Keep your streaks going."; }
+  if (/bye/.test(q)) { return "See you. Mark today's classes before you sleep."; }
+  return greeting() + " I am your academic mentor. Ask me about your attendance, whether you can skip a class, your timetable, holidays, exams, or how this app works. Tap one of the buttons for ideas.";
+}
+function ansAttendance(q) {
+  var c = findCourse(q);
+  if (c) {
+    var st = statOf(c.id);
+    var out = c.name + ": " + (st.pct === null ? "--" : st.pct + "%") + " (" + st.att + " present of " + st.held + " held). " + nowText(st);
+    if (endText(st)) { out += "\n" + endText(st); }
+    out += "\nYour timetable and the calendar show " + calLeft(c.id) + " classes left before end-term" + (st.hasTotal ? " (your portal total implies " + st.remaining + ")." : ".");
+    return out;
+  }
+  var list = sortedStats();
+  var o = overallStats();
+  var lines = ["Required: " + state.target + "%. Overall: " + (o.pct === null ? "--" : o.pct + "%") + " (" + o.att + " of " + o.held + ")."];
+  for (var i = 0; i < list.length; i++) { lines.push(lineFor(list[i])); }
+  if (list.length > 0 && list[0].level === "bad") { lines.push("Priority: " + list[0].sub.short + ". " + nowText(list[0])); }
+  return lines.join("\n");
+}
+function ansLeft(q) {
+  var list = sortedStats();
+  var rows = ["Classes left, from your timetable and the calendar (the portal total is in brackets):"];
+  for (var i = 0; i < list.length; i++) {
+    var s = list[i];
+    var line = "- " + s.sub.short + ": " + calLeft(s.sub.id) + " left";
+    if (s.hasTotal) {
+      line += " (" + s.remaining + ")";
+      if (s.canReach) { line += ". Attend at least " + s.mustAttend + ", spare " + s.canMiss + "."; }
+      else { line += ". Cannot reach " + state.target + "% any more."; }
+    }
+    rows.push(line);
+  }
+  rows.push("The calendar count is what your weekly timetable adds up to, skipping holidays, exam days and no-class windows. Your attendance percentage is judged on the portal total, so use that for the spare-class maths.");
+  return rows.join("\n");
+}
+function ansSkip(q) {
+  var stats = subjectStats();
+  var byId = {};
+  var i;
+  for (i = 0; i < stats.length; i++) { byId[stats[i].sub.id] = stats[i]; }
+  if (/how many|spare|limit|can i miss/.test(q) && !pickDate(q)) {
+    var rows = ["Spare classes right now (target " + state.target + "%):"];
+    var sorted = sortedStats();
+    for (i = 0; i < sorted.length; i++) {
+      var s = sorted[i];
+      if (s.run.kind === "safe") { rows.push("- " + s.sub.short + ": " + s.run.n + (s.hasTotal && s.canReach ? " now, " + s.canMiss + " for the rest of the semester" : "")); }
+      else if (s.run.n < 0) { rows.push("- " + s.sub.short + ": none. It cannot be recovered at this target."); }
+      else { rows.push("- " + s.sub.short + ": none. Below target, attend the next " + s.run.n + " in a row."); }
+    }
+    return rows.join("\n");
+  }
+  var d = pickDate(q) || focusDay();
+  var c = findCourse(q);
+  var slots = classSlotsOn(d);
+  if (c) { slots = slots.filter(function (x) { return x.sub === c.id; }); }
+  if (slots.length === 0) {
+    return dayLine(d) + (dayInfo(dateKey(d)).kind === "teach" ? " You have nothing to skip" + (c ? " in " + c.short : "") + "." : "");
+  }
+  var per = {};
+  var order = [];
+  slots.forEach(function (x) {
+    if (per[x.sub] === undefined) { per[x.sub] = 0; order.push(x.sub); }
+    per[x.sub] += x.span || 1;
+  });
+  var out = ["If you skip " + (c ? c.short + " " : "") + whenText(d) + ":"];
+  var bad = 0;
+  order.forEach(function (id) {
+    var st = byId[id];
+    var n = per[id];
+    var after = st.held + n;
+    var ok = st.att * 100 >= state.target * after;
+    var p = Math.round((100 * st.att) / after);
+    if (ok) { out.push("- " + st.sub.short + ": OK on paper. Stays at " + p + "% and leaves " + (st.run.n - n) + " spare."); }
+    else { bad++; out.push("- " + st.sub.short + ": do not skip. It would fall to " + p + "%, below " + state.target + "%."); }
+  });
+  out.push(bad > 0 ? "Skipping everything is not safe. Attend the ones marked do not skip." : "Safe on paper, but spare classes are a safety net for real emergencies, not a plan.");
+  return out.join("\n");
+}
+function ansTimetable(q) {
+  var c = findCourse(q);
+  if (c && /who|teacher|professor|faculty|room|where|block/.test(q)) {
+    var seen = {};
+    var lines = [];
+    for (var i = 0; i < state.slots.length; i++) {
+      var s = state.slots[i];
+      var key = s.kind + s.teacher + s.room;
+      if (s.sub !== c.id || seen[key]) { continue; }
+      seen[key] = 1;
+      lines.push("- " + s.kind + ": " + (s.teacher || "teacher not set") + ", " + (s.room || "room not set"));
+    }
+    return c.name + ":\n" + (lines.join("\n") || "No slots in your timetable.");
+  }
+  if (/next (class|lecture)|first class/.test(q)) {
+    var t = today();
+    for (var a = 0; a < 14; a++) {
+      var dd = addDays(t, a);
+      var list = classSlotsOn(dd);
+      for (var j = 0; j < list.length; j++) {
+        if (a === 0 && list[j].end <= nowClock()) { continue; }
+        var x = list[j];
+        return "Next class: " + slotName(x) + ", " + whenText(dd) + " at " + nice12(x.start) + (x.room ? ", " + x.room : "") + (x.teacher ? ", " + x.teacher : "") + ".";
+      }
+    }
+    return "No classes in the next two weeks.";
+  }
+  var d = pickDate(q) || today();
+  if (dayInfo(dateKey(d)).kind !== "teach") { return dayLine(d); }
+  var all = slotsOnDay(d.getDay());
+  var out = [dayLine(d)];
+  if (all.length === 0) { return out[0] + " Nothing on your timetable."; }
+  for (var k = 0; k < all.length; k++) {
+    var off = slotOff(dateKey(d), all[k]);
+    out.push("- " + nice12(all[k].start) + " to " + nice12(all[k].end) + " " + slotName(all[k]) + " (" + kindLabel(all[k]) + ")" + (off ? " [no class: " + off + "]" : ""));
+  }
+  return out.join("\n");
+}
+function upcomingHolidays() {
+  var keys = Object.keys(CAL.off).sort();
+  var tk = dateKey(today());
+  var out = [];
+  for (var i = 0; i < keys.length; i++) { if (keys[i] >= tk && CAL.off[keys[i]][0] === "H") { out.push(keys[i]); } }
+  return out;
+}
+function ansHoliday(q) {
+  var d = pickDate(q);
+  if (/saturday|lieu|working day/.test(q) && !d) {
+    return "Saturdays 19 Sep, 26 Sep, 10 Oct, 14 Nov and 28 Nov are working days in lieu of holidays. In the UG column, 19 Sep, 10 Oct and 14 Nov show as weekend breaks, 26 Sep is a mid-term exam day and 28 Nov is buffer classes plus practical/lab exams. Your timetable has no Saturday classes, so the app counts nothing on Saturdays. If a department announces a Saturday class, tell me and add it as a slot.";
+  }
+  if (/count|pause|attendance|calendar/.test(q) && !d) {
+    return "Attendance counting follows the SR University calendar. It runs only on teaching days that have a class in your timetable. It pauses on holidays, weekends, mid-term and end-term exam days, and for slots inside a no-class window (club activity days 11 AM to 5 PM, mid-term make-up test mornings 9 to 11 AM, only if you switch the make-up option on in Settings). After the last working day (28 Nov) nothing counts until the even-semester calendar is added.";
+  }
+  if (/resume|reopen|come back|back to class/.test(q)) {
+    var n = calNote();
+    return n ? n.text : "Classes are running as normal. Ask me for the next holiday if you want to plan ahead.";
+  }
+  if (d) { return dayLine(d); }
+  var h = upcomingHolidays();
+  if (h.length === 0) { return "No more holidays in the odd-semester calendar after today."; }
+  var many = /holidays|list|all|which/.test(q);
+  var lim = many ? h.length : 3;
+  var rows = [many ? "Holidays left this semester:" : "Next holidays:"];
+  for (var i = 0; i < lim && i < h.length; i++) { rows.push("- " + fmtD(parseKey(h[i])) + ": " + CAL.off[h[i]][1]); }
+  return rows.join("\n");
+}
+function ansDates(q) {
+  var dt = daysTo("2026-11-30");
+  var T = [
+    [/make[- ]?up/, "Mid-term make-up tests run 26 Oct to 2 Nov (not 31 Oct/1 Nov), 9:20 to 10:20 AM, with no classes 9 to 11 AM on those days. Registration was 10 to 13 Oct, with late fines from 14 Oct. If you are taking one, switch it on in Settings (gear icon) and the app will skip your 9 to 11 AM classes on those days. Otherwise your normal timetable runs."],
+    [/mid[- ]?term|midterm/, "Mid-term exams were Fri 25 Sep, Sat 26 Sep and Mon 28 Sep to Thu 1 Oct. The 2nd spell of instruction started Mon 5 Oct. Answer sheets were to be checked on 7 Oct. Make-up tests: 26 Oct to 2 Nov."],
+    [/supplementary|backlog|repeat/, "Supplementary / end-term make-up: registration 11 to 14 Dec (late fines after that), exams from Fri 18 Dec to Mon 28 Dec (no exam on 25 Dec), results on Thu 31 Dec."],
+    [/result/, "Odd semester results are declared Fri 11 Dec. Supplementary / make-up results follow on Thu 31 Dec."],
+    [/next semester|even sem|start|begin/, "The even semester begins with orientation on Fri 1 Jan 2027, and the first teaching day is Mon 4 Jan 2027. Even-semester course registration runs 15 to 22 Dec."],
+    [/last working|semester end|last day/, "The last working day of the odd semester is Sat 28 Nov. Fri 27 Nov and Sat 28 Nov are buffer classes with practical/lab exams. End-term exams start Mon 30 Nov."],
+    [/fee|registration|deadline/, "Odd semester end-term exam fee payment ends Wed 25 Nov. The fee notification was released 15 Sep. For anything else, check the full PDF calendar or ask your department."],
+    [/feedback/, "End-term, Mentor-Mentee and CLO feedback is open Mon 16 Nov to Wed 18 Nov."],
+    [/end[- ]?term|final|semester exam|exam/, "End-term exams run Mon 30 Nov to Sat 5 Dec, " + (dt >= 0 ? dt + " days away" : "already started") + ". Practical/lab exams are on 27 and 28 Nov. Feedback is 16 to 18 Nov, and exam fee payment ends 25 Nov. Results come on 11 Dec."]
+  ];
+  for (var i = 0; i < T.length; i++) { if (T[i][0].test(q)) { return T[i][1]; } }
+  return "Key dates ahead:\n- 19 to 23 Oct: holidays\n- 26 Oct to 2 Nov: mid-term make-up tests\n- 16 to 18 Nov: feedback\n- 28 Nov: last working day\n- 30 Nov to 5 Dec: end-term exams\n- 11 Dec: results\n- 4 Jan 2027: even semester starts";
+}
+function ansPlan(q) {
+  var out = [greeting()];
+  if (/week/.test(q)) {
+    out.push("Next 7 days:");
+    var t = today();
+    for (var i = 0; i < 7; i++) {
+      var d = addDays(t, i);
+      var inf = dayInfo(dateKey(d));
+      var list = classSlotsOn(d);
+      var n = 0;
+      for (var j = 0; j < list.length; j++) { n += list[j].span || 1; }
+      out.push("- " + fmtD(d) + ": " + (inf.kind !== "teach" ? inf.label : (n > 0 ? n + " classes from " + nice12(list[0].start) : "no classes")));
+    }
+    out.push("What matters most:");
+  }
+  var notes = buildBriefing().notes;
+  for (var k = 0; k < notes.length && k < 4; k++) { out.push("- " + notes[k].title + ": " + notes[k].text); }
+  return out.join("\n");
+}
+function ansHabits(q) {
+  if (state.habits.length === 0) { return "You have no habits yet. Add two or three small ones in the Habits tab, for example: " + HABIT_IDEAS.slice(0, 3).join(", ") + "."; }
+  var t = today();
+  var rows = ["Your habits today:"];
+  state.habits.forEach(function (h) {
+    if (!habitScheduled(h, t)) { return; }
+    rows.push("- " + h.name + ": " + (habitDone(dateKey(t), h.id) ? "done" : "open") + ", " + habitStreak(h) + " day streak");
+  });
+  if (rows.length === 1) { rows.push("Nothing is scheduled today."); }
+  var hr = weekHabitRate();
+  if (hr !== null) { rows.push("Last 7 days: " + hr + "% of habits done."); }
+  return rows.join("\n");
+}
+function ansStudy(q) {
+  var list = sortedStats();
+  var dt = daysTo("2026-11-30");
+  var out = [];
+  if (/stress|anxious|overwhelm|tired|lazy|demotivat|burn/.test(q)) {
+    out.push("That is common mid-semester. Shrink the goal: one 25-minute focused block on one subject, then a break. If it stays heavy for more than a few days, talk to your mentor or someone you trust.");
+  }
+  if (dt >= 0) { out.push("End-term exams start in " + dt + " days (Mon 30 Nov)."); }
+  if (list.length > 0 && list[0].level !== "good" && list[0].level !== "none") {
+    out.push("Start with " + list[0].sub.short + ". It is lowest on attendance, so you have probably missed the most lessons there. Borrow notes and revise those topics first.");
+  }
+  out.push("Simple routine: two 45-minute focus blocks on weekdays, a 10-minute recap before bed, and one longer revision block on Sunday. Add it as a habit so the streak keeps you honest.");
+  return out.join("\n");
+}
+var APP_HELP = [
+  [/portal|sync|mismatch|match|wrong|update/, "Attendance tab, then Update from portal. Enter Held Cls and PR for each course from your portal, and the last date those numbers include. Classes you mark after that date are added on top. Do this every week or two to stay exact."],
+  [/counted|locked|already inside/, "Classes on or before your portal date are already inside your portal numbers, so they show as Counted and cannot be marked again. That stops double counting."],
+  [/mark|present|absent|no class/, "Open Today, pick the day in the week strip, then tap Present, Absent or No class under each class. Marks open on the day itself. A 2-hour practical counts as 2 classes. Holidays, exam days and no-class windows from the calendar are skipped automatically."],
+  [/habit/, "Habits tab: Add a habit, or tap one to change its days or delete it. Tick it in Today every day. A streak only counts the days you scheduled."],
+  [/timetable|slot/, "Timetable tab: Add a slot, or tap one to edit or delete it. Pick several days to repeat a slot. Set a 2-hour practical to count as 2."],
+  [/course|subject/, "Attendance tab: Add a course with the Held and Present numbers from your portal. Tap a course to rename it or change its totals."],
+  [/score|regularity/, "The regularity score is the average of your habit completion and class attendance over the last 7 days. 85 and above is Locked in, 65 Steady, 40 Slipping, below that Restart today."],
+  [/target|75|setting|name/, "Tap the gear at the top. You can change your name and the required attendance. Every warning in the app uses that number."],
+  [/save|backup|data|uninstall|offline|lose|erase|reset|delete/, "Everything is saved on this phone only and works offline. Uninstalling the app or clearing its data erases it. Reset and erase buttons are in Settings and need a second tap to confirm."],
+  [/holiday|calendar|pause/, "Attendance counting follows the SR University calendar and pauses on holidays, weekends, exam days and no-class windows. Ask me for the next holiday or for a date."],
+  [/chat|mentor|bot/, "I read your attendance, timetable, habits and the SR calendar on this phone and answer from those numbers. I work offline. Try: Can I skip Physics tomorrow?"]
+];
+function ansApp(q) {
+  for (var i = 0; i < APP_HELP.length; i++) { if (APP_HELP[i][0].test(q)) { return APP_HELP[i][1]; } }
+  return "Today: mark classes and tick habits. Mentor: your briefing and this chat. Habits: streaks and the 5-week map. Timetable: edit your weekly slots. Attendance: per-course percentages and Update from portal. The gear sets your name and required attendance. Ask me how to do anything specific.";
+}
+var INTENTS = [
+  { id: "hi", fn: ansHello, rx: [[/^\s*(hi|hello|hey|yo|hola|namaste)\b|good (morning|afternoon|evening)/, 6], [/who are you|what can you do|what can i ask|^\s*help\s*[?!.]*\s*$/, 5], [/thank|thanks|\bbye\b/, 6]] },
+  { id: "skip", fn: ansSkip, rx: [[/skip|bunk|miss|cut class|take (a )?(day )?off|afford/, 3], [/can i|should i|is it (ok|safe)/, 1], [/spare|how many (classes )?can/, 4]] },
+  { id: "left", fn: ansLeft, rx: [[/(classes|lectures) (are )?(left|remaining)|remaining classes|classes left|how many (more )?classes/, 5]] },
+  { id: "app", fn: ansApp, rx: [[/how (do|to|can) i|where (do|can) i|how does|what does|button|this app|the app/, 4], [/portal|sync|regularity|settings|backup|uninstall|offline|add (a )?(course|habit|slot)/, 3]] },
+  { id: "att", fn: ansAttendance, rx: [[/attendance|percent|%|shortage|detain|eligible|risk|below|75/, 3], [/how am i|how is my/, 2]] },
+  { id: "tt", fn: ansTimetable, rx: [[/timetable|time table|next class|next lecture|first class|who teaches|teacher|professor|room|where is|which block/, 4], [/classes? (do i have|today|tomorrow|on)|what classes|any class|lectures? (today|tomorrow)/, 4]] },
+  { id: "hol", fn: ansHoliday, rx: [[/holiday|day off|vacation|saturday|lieu|resume|reopen|diwali|dusshera|dussehra|festival|working day/, 4], [/is .* (a )?(working|holiday)/, 3]] },
+  { id: "ex", fn: ansDates, rx: [[/exam|mid[- ]?term|midterm|end[- ]?term|make[- ]?up|supplementary|backlog|result|semester end|last working day|next semester|even sem|deadline|feedback/, 4]] },
+  { id: "plan", fn: ansPlan, rx: [[/plan|this week|next week|my week|evening|tonight|what should i do|prioriti|urgent|important/, 4]] },
+  { id: "habit", fn: ansHabits, rx: [[/habit|streak|routine|sleep|workout|wake up/, 4]] },
+  { id: "study", fn: ansStudy, rx: [[/study|revise|revision|prepare|preparation|tips|motivat|stress|tired|lazy|procrastinat|focus|concentrat|grade|cgpa|marks|overwhelm|anxious/, 3]] }
+];
+function botFallback(q) {
+  var last = null;
+  for (var i = 0; i < INTENTS.length; i++) { if (INTENTS[i].id === bot.last) { last = INTENTS[i]; } }
+  if (last && (findCourse(q) || pickDate(q))) { return last.fn(q); }
+  if (findCourse(q)) { return ansAttendance(q); }
+  if (pickDate(q)) { return ansTimetable(q); }
+  return "I did not catch that. I can answer about your attendance, skipping a class, timetable, holidays, exams, habits, studying, or how the app works. Try: Can I miss Heritage on Monday?";
+}
+function askMentor(question) {
+  question = question.trim();
+  if (question === "") { return; }
+  var q = question.toLowerCase();
+  var best = null;
+  var bestScore = 0;
+  for (var i = 0; i < INTENTS.length; i++) {
+    var score = 0;
+    for (var j = 0; j < INTENTS[i].rx.length; j++) { if (INTENTS[i].rx[j][0].test(q)) { score += INTENTS[i].rx[j][1]; } }
+    if (score > bestScore) { bestScore = score; best = INTENTS[i]; }
+  }
+  var a;
+  if (best) { a = best.fn(q); bot.last = best.id; } else { a = botFallback(q); }
+  ui.ask.items.push({ q: question, a: a, ok: true });
+  if (ui.ask.items.length > 30) { ui.ask.items.shift(); }
+  render();
+}
+
+</script>
+<script>
+/* ---------- the mentor: plain rules that read your numbers and tell you what matters ---------- */
+function greeting() {
+  var h = new Date().getHours();
+  var word = "Good evening";
+  if (h < 12) { word = "Good morning"; }
+  else if (h < 17) { word = "Good afternoon"; }
+  if (state.name) { return word + ", " + state.name + "."; }
+  return word + ".";
+}
+
+/* The day the briefing talks about: today while classes are still to come, otherwise the next day with classes. */
+function focusDay() {
+  var t = today();
+  var list = classSlotsOn(t);
+  if (list.length > 0 && nowClock() <= list[list.length - 1].end) { return t; }
+  for (var i = 1; i < 10; i++) {
+    var d = addDays(t, i);
+    if (classSlotsOn(d).length > 0) { return d; }
+  }
+  return t;
+}
+function dayWord(d) {
+  var diff = Math.round((d.getTime() - today().getTime()) / 86400000);
+  if (diff === 0) { return "today"; }
+  if (diff === 1) { return "tomorrow"; }
+  return DAY_LONG[d.getDay()] + " " + niceDate(d);
+}
+function capital(s) {
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+function nextClassOf(subId, fromDate) {
+  for (var i = 0; i < 14; i++) {
+    var d = addDays(fromDate, i);
+    var list = classSlotsOn(d);
+    for (var j = 0; j < list.length; j++) {
+      if (list[j].sub !== subId) { continue; }
+      if (i === 0 && dateKey(d) === dateKey(today()) && list[j].end <= nowClock()) { continue; }
+      return { date: d, slot: list[j] };
+    }
+  }
+  return null;
+}
+
+/* classes from the last week that are not marked yet (only days after the portal date count) */
+function unmarkedSummary() {
+  var t = today();
+  var count = 0;
+  var oldest = "";
+  for (var back = 0; back < 7; back++) {
+    var d = addDays(t, -back);
+    var k = dateKey(d);
+    var list = classSlotsOn(d);
+    for (var i = 0; i < list.length; i++) {
+      if (isLocked(k, list[i].sub)) { continue; }
+      if (back === 0 && nowClock() <= list[i].end) { continue; }
+      if (getMark(k, list[i].id) === "") {
+        count = count + (list[i].span || 1);
+        oldest = DAY_SHORT[d.getDay()] + " " + niceDate(d);
+      }
+    }
+  }
+  return { count: count, oldest: oldest };
+}
+
+function buildBriefing() {
+  var notes = [];
+  var stats = subjectStats();
+  var byId = {};
+  for (var i = 0; i < stats.length; i++) { byId[stats[i].sub.id] = stats[i]; }
+  var focus = focusDay();
+  var word = dayWord(focus);
+  var allSlots = classSlotsOn(focus);
+  var slots = [];
+  var isToday = dateKey(focus) === dateKey(today());
+  for (var s0 = 0; s0 < allSlots.length; s0++) {
+    if (isToday && allSlots[s0].end <= nowClock()) { continue; }
+    slots.push(allSlots[s0]);
+  }
+  var issues = 0;
+
+  /* what the day looks like (only classes still to come, if it is today) */
+  if (slots.length === 0) {
+    notes.push({ level: "info", title: "No classes in the next week", text: "Use the time for your habits and your own study." });
+  } else {
+    var count = 0;
+    for (var a = 0; a < slots.length; a++) { count = count + (slots[a].span || 1); }
+    var first = slots[0];
+    var last = slots[slots.length - 1];
+    var line = "First up: " + slotShort(first) + " at " + nice12(first.start);
+    if (first.room) { line += ", " + first.room; }
+    line += ". Done by " + nice12(last.end) + ".";
+    var head = capital(word) + ": " + plural(count, "class");
+    if (isToday && slots.length < allSlots.length) { head += " left"; }
+    notes.push({ level: "info", title: head, text: line });
+  }
+
+  /* subjects that need care on that day */
+  var seen = {};
+  for (var b = 0; b < slots.length; b++) {
+    var sl = slots[b];
+    var st = byId[sl.sub];
+    if (!st || seen[st.sub.id]) { continue; }
+    seen[st.sub.id] = true;
+    var extra = "";
+    if ((sl.span || 1) > 1) { extra = "This " + sl.kind.toLowerCase() + " counts as " + sl.span + " classes. "; }
+    if (st.level === "bad") {
+      var head = st.sub.short + " is at " + st.pct + "%";
+      var body = extra + "Do not miss the " + nice12(sl.start) + " class " + word + ". " + nowText(st);
+      if (st.hasTotal && !st.canReach) { body = extra + endText(st); }
+      notes.push({ level: "bad", title: head, text: body });
+      issues = issues + 1;
+    } else if (st.level === "warn") {
+      notes.push({ level: "warn", title: st.sub.short + " has little room", text: extra + nowText(st) + " " + endText(st) });
+      issues = issues + 1;
+    }
+  }
+
+  /* subjects at risk that are not on that day: say when they come next */
+  for (var c = 0; c < stats.length; c++) {
+    var s2 = stats[c];
+    if (s2.level !== "bad" || seen[s2.sub.id]) { continue; }
+    var nx = nextClassOf(s2.sub.id, focus);
+    var when = "";
+    if (nx) { when = " Next one: " + DAY_LONG[nx.date.getDay()] + " " + niceDate(nx.date) + " " + nice12(nx.slot.start) + "."; }
+    notes.push({ level: "bad", title: s2.sub.short + " is at " + s2.pct + "%", text: nowText(s2) + when });
+    issues = issues + 1;
+  }
+
+  var cn = calNote();
+  if (cn) { notes.push(cn); }
+
+  /* marks you forgot */
+  var um = unmarkedSummary();
+  if (um.count > 0) {
+    notes.push({ level: "warn", title: plural(um.count, "class") + " not marked", text: "Oldest is " + um.oldest + ". Mark them in Today so your numbers stay true." });
+  }
+
+  /* habits */
+  if (state.habits.length === 0) {
+    notes.push({ level: "info", title: "No habits yet", text: "Add two or three small daily habits in the Habits tab. Small ones you keep beat big ones you drop." });
+  } else {
+    var t = today();
+    var pending = [];
+    var dueCount = 0;
+    for (var h = 0; h < state.habits.length; h++) {
+      var hab = state.habits[h];
+      if (!habitScheduled(hab, t)) { continue; }
+      dueCount = dueCount + 1;
+      if (!habitDone(dateKey(t), hab.id)) { pending.push(hab); }
+    }
+    if (pending.length > 0) {
+      var best = pending[0];
+      for (var p = 1; p < pending.length; p++) {
+        if (habitStreak(pending[p]) > habitStreak(best)) { best = pending[p]; }
+      }
+      var streak = habitStreak(best);
+      var evening = new Date().getHours() >= 17;
+      if (streak >= 3) {
+        var lvl = "info";
+        if (evening) { lvl = "warn"; }
+        notes.push({ level: lvl, title: "Protect your " + streak + "-day streak", text: best.name + " is still open today." });
+      } else {
+        notes.push({ level: "info", title: plural(pending.length, "habit") + " left today", text: best.name + (pending.length > 1 ? " and more." : ".") });
+      }
+    } else if (dueCount > 0) {
+      notes.push({ level: "good", title: "Habits done for today", text: "All " + dueCount + " ticked. That is how a streak is built." });
+    }
+  }
+
+  if (issues === 0 && stats.length > 0) {
+    notes.push({ level: "good", title: "Every course is above " + state.target + "%", text: "Spare classes are a safety net for real emergencies, not a plan." });
+  }
+
+  var rank = { bad: 0, warn: 1, info: 2, good: 3 };
+  notes.sort(function (x, y) { return rank[x.level] - rank[y.level]; });
+  return { greeting: greeting(), focus: focus, word: word, notes: notes };
+}
+
+/* The facts handed to the Ask box, so the answer uses your real numbers. */
+function factsText() {
+  var lines = [];
+  var n = new Date();
+  lines.push("Now: " + DAY_LONG[n.getDay()] + " " + niceDate(n) + ", " + nowClock() + ". Student: " + (state.name || "the student") + ". Required attendance: " + state.target + "%.");
+  lines.push("ATTENDANCE (counts as of now):");
+  var list = sortedStats();
+  for (var i = 0; i < list.length; i++) {
+    var s = list[i];
+    lines.push("- " + s.sub.name + ": " + s.att + " present of " + s.held + " held = " + s.pct + "%. " + nowText(s) + " " + endText(s));
+  }
+  var o = overallStats();
+  lines.push("Overall: " + o.att + " of " + o.held + " = " + o.pct + "%.");
+  lines.push("WEEKLY TIMETABLE:");
+  for (var d = 0; d < DAY_ORDER.length; d++) {
+    var slots = slotsOnDay(DAY_ORDER[d]);
+    if (slots.length === 0) { continue; }
+    var parts = [];
+    for (var j = 0; j < slots.length; j++) {
+      parts.push(slots[j].start + "-" + slots[j].end + " " + slotShort(slots[j]) + " (" + slots[j].kind + ")");
+    }
+    lines.push("- " + DAY_SHORT[DAY_ORDER[d]] + ": " + parts.join(", "));
+  }
+  lines.push("HABITS:");
+  if (state.habits.length === 0) { lines.push("- none yet"); }
+  for (var h = 0; h < state.habits.length; h++) {
+    var hab = state.habits[h];
+    var doneToday = "not done today";
+    if (habitDone(dateKey(today()), hab.id)) { doneToday = "done today"; }
+    lines.push("- " + hab.name + ": streak " + habitStreak(hab) + " days, " + doneToday);
+  }
+  var hr = weekHabitRate();
+  var ar = weekAttendanceRate();
+  lines.push("Regularity score: " + regularityScore(hr, ar) + " (habits " + hr + "%, marked classes " + ar + "%).");
+  return lines.join("\n");
+}
+</script>
+<script>
+/* ---------- what is on screen ---------- */
+var ui = { tab: "day", sel: dateKey(today()), ttDay: "all", ask: { available: false, busy: false, items: [] } };
+
+var CHECK_SVG = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>';
+var HABIT_IDEAS = ["Sleep by 11 pm", "Wake up by 6:30", "Python practice, 30 min", "Revise the day's notes", "Workout or walk", "Read 20 minutes"];
+
+function scheduleText(days) {
+  if (days.length === 7) { return "Every day"; }
+  var names = [];
+  for (var i = 0; i < DAY_ORDER.length; i++) {
+    if (days.indexOf(DAY_ORDER[i]) >= 0) { names.push(DAY_SHORT[DAY_ORDER[i]]); }
+  }
+  return names.join(" ");
+}
+function meterClass(value, goal) {
+  if (value >= goal) { return "good"; }
+  if (value >= goal - 15) { return "warn"; }
+  return "bad";
+}
+function timeRange(slot) {
+  var a = nice12(slot.start);
+  var b = nice12(slot.end);
+  if (a.substring(a.length - 2) === b.substring(b.length - 2)) { a = a.substring(0, a.length - 3); }
+  return a + " to " + b;
+}
+function swatch(subId) {
+  return '<i class="sw" style="background:' + subjectColor(subId) + '"></i>';
+}
+function kindLabel(slot) {
+  var text = slot.kind;
+  if ((slot.span || 1) > 1) { text += " · " + slot.span + " classes"; }
+  return text;
+}
+function pillFor(level, label) {
+  return '<span class="pill ' + level + '">' + esc(label) + '</span>';
+}
+
+/* ---------- the mentor's notes ---------- */
+var NOTE_LABEL = { bad: "Priority", warn: "Heads up", info: "Plan", good: "Good" };
+function renderNotes(notes, limit) {
+  var html = "";
+  var shown = notes.length;
+  if (limit && shown > limit) { shown = limit; }
+  for (var i = 0; i < shown; i++) {
+    var n = notes[i];
+    html += '<div class="note"><div class="note-h">' + pillFor(n.level, NOTE_LABEL[n.level]) + '<b>' + esc(n.title) + '</b></div>';
+    html += '<p>' + esc(n.text) + '</p></div>';
+  }
+  return html;
+}
+function renderMentorCard() {
+  var brief = buildBriefing();
+  var html = '<section class="card" aria-label="Mentor"><div class="mono muted" style="font-size:12px;letter-spacing:0.08em">YOUR MENTOR</div>';
+  html += '<h1 class="greet">' + esc(brief.greeting) + '</h1>';
+  html += renderNotes(brief.notes, 3);
+  if (brief.notes.length > 3) {
+    html += '<button class="btn quiet block" style="margin-top:12px" data-act="tab" data-tab="mentor">All ' + brief.notes.length + ' notes</button>';
+  }
+  html += '</section>';
+  return html;
+}
+
+/* ---------- Today tab ---------- */
+function meterRow(label, value, goal, showTick) {
+  var html = '<div class="mrow"><div class="mhead"><span>' + label + '</span><b>';
+  if (value === null) { html += "--"; } else { html += value + "%"; }
+  html += '</b></div><div class="meter">';
+  if (value !== null) { html += '<i class="' + meterClass(value, goal) + '" style="width:' + value + '%"></i>'; }
+  if (showTick) { html += '<span class="tick" style="left:' + goal + '%"></span>'; }
+  html += '</div></div>';
+  return html;
+}
+function renderScoreCard() {
+  var hr = weekHabitRate();
+  var ar = weekAttendanceRate();
+  var attLabel = "Classes attended, last 7 days";
+  var note = "Average of habit completion and class attendance over the last 7 days.";
+  if (ar === null) {
+    ar = overallStats().pct;
+    attLabel = "Attendance, overall";
+    note = "Until you mark classes here, the attendance half uses your portal's overall number.";
+  }
+  if (hr === null) { note = "Add a habit to start the habits half of the score."; }
+  var score = regularityScore(hr, ar);
+  var html = '<section class="card" aria-label="Regularity"><div class="score"><div class="score-main">';
+  if (score === null) { html += '<div class="score-num">--</div>'; } else { html += '<div class="score-num">' + score + '</div>'; }
+  html += '<div class="score-of">REGULARITY / 100</div><div class="score-band">' + scoreBand(score) + '</div></div>';
+  html += '<div class="score-meters">';
+  html += meterRow("Habits, last 7 days", hr, 80, false);
+  html += meterRow(attLabel, ar, state.target, true);
+  html += '</div></div><p class="score-note">' + note + '</p></section>';
+  return html;
+}
+function renderWeekStrip() {
+  var sel = parseKey(ui.sel);
+  var start = startOfWeek(sel);
+  var todayKey = dateKey(today());
+  var html = '<div class="week-head"><span class="lbl">Week of ' + niceDate(start) + '</span><span class="ctl">';
+  html += '<button class="small-btn" data-act="weekShift" data-n="-7" aria-label="Previous week">&lsaquo;</button>';
+  html += '<button class="small-btn" data-act="goToday">Today</button>';
+  html += '<button class="small-btn" data-act="weekShift" data-n="7" aria-label="Next week">&rsaquo;</button>';
+  html += '</span></div><div class="week">';
+  for (var i = 0; i < 7; i++) {
+    var d = addDays(start, i);
+    var k = dateKey(d);
+    var c = dayHabitCount(d);
+    var fill = 0;
+    if (c.due > 0) { fill = Math.round((100 * c.done) / c.due); }
+    var cls = "day";
+    if (k === todayKey) { cls += " today"; }
+    if (k === ui.sel) { cls += " sel"; }
+    html += '<button class="' + cls + '" data-act="pickDay" data-date="' + k + '" aria-label="' + DAY_LONG[d.getDay()] + " " + niceDate(d) + '">';
+    html += '<span class="dow">' + DAY_SHORT[d.getDay()] + '</span><span class="num">' + d.getDate() + '</span>';
+    html += '<span class="bar"><i style="width:' + fill + '%"></i></span></button>';
+  }
+  html += '</div>';
+  return html;
+}
+function markButton(slotId, mark, label, on, onClass) {
+  var cls = "";
+  if (on) { cls = onClass; }
+  return '<button class="' + cls + '" data-act="mark" data-slot="' + slotId + '" data-mark="' + mark + '" aria-pressed="' + on + '">' + label + '</button>';
+}
+function renderDay() {
+  var todayKey = dateKey(today());
+  var sel = parseKey(ui.sel);
+  var future = ui.sel > todayKey;
+  var html = renderMentorCard();
+  html += '<div style="height:18px"></div>';
+  html += renderScoreCard();
+  html += '<div style="height:18px"></div>';
+  html += renderWeekStrip();
+
+  var heading = DAY_LONG[sel.getDay()] + ", " + niceDate(sel);
+  if (ui.sel === todayKey) { heading += " (today)"; }
+  var slots = slotsOnDay(sel.getDay());
+  var classCount = 0;
+  var markedCount = 0;
+  for (var i = 0; i < slots.length; i++) {
+    if (slots[i].kind !== "Personal" && !isLocked(ui.sel, slots[i].sub) && !slotOff(ui.sel, slots[i])) {
+      classCount = classCount + 1;
+      if (getMark(ui.sel, slots[i].id) !== "") { markedCount = markedCount + 1; }
+    }
+  }
+  html += '<section class="section"><div class="sec-h"><h2>' + heading + '</h2>';
+  if (classCount > 0 && !future) { html += '<span class="cnt">' + markedCount + ' of ' + classCount + ' marked</span>'; }
+  html += '</div>';
+  var dinfo = dayInfo(ui.sel);
+  if ((dinfo.kind !== "teach" && dinfo.label !== "Weekend") || dinfo.win) {
+    html += '<div class="banner" style="margin-top:12px">' + (dinfo.win ? esc('No classes ' + nice12(dinfo.win[0]) + ' to ' + nice12(dinfo.win[1]) + ' (' + dinfo.win[2] + '). Those slots are not counted.') : esc(dinfo.label + '. Attendance counting is paused for this day.')) + '</div>';
+  }
+  if (slots.length === 0) {
+    html += '<p class="empty">No classes on ' + DAY_LONG[sel.getDay()] + '.</p>';
+  }
+  for (var j = 0; j < slots.length; j++) {
+    var sl = slots[j];
+    if (sl.kind === "Personal") {
+      html += '<div class="row"><div class="grow"><div class="name">' + esc(slotName(sl)) + '</div><div class="sub"><span class="tag">Personal</span>' + timeRange(sl) + '</div></div></div>';
+      continue;
+    }
+    var mark = getMark(ui.sel, sl.id);
+    var locked = isLocked(ui.sel, sl.sub);
+    var off = slotOff(ui.sel, sl);
+    html += '<div class="cls"><div class="name">' + swatch(sl.sub) + esc(slotName(sl)) + '</div>';
+    html += '<div class="sub"><span class="mono">' + timeRange(sl) + '</span> &middot; <span class="tag">' + esc(kindLabel(sl)) + '</span></div>';
+    if (sl.teacher) { html += '<div class="sub">' + esc(sl.teacher) + '</div>'; }
+    if (sl.room) { html += '<div class="sub">' + esc(sl.room) + '</div>'; }
+    if (locked && !future) { html += '<div class="sub" style="margin-top:6px"><span class="tag">Counted</span>Already inside your portal numbers.</div>'; }
+    if (off && !future && !locked) { html += '<div class="sub" style="margin-top:6px"><span class="tag">Not counted</span>' + esc(off) + '</div>'; }
+    if (!future && !locked && !off) {
+      html += '<div class="seg">';
+      html += markButton(sl.id, "P", "Present", mark === "P", "on-p");
+      html += markButton(sl.id, "A", "Absent", mark === "A", "on-a");
+      html += markButton(sl.id, "C", "No class", mark === "C", "on-c");
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  if (future && classCount > 0) { html += '<p class="hint">This day has not happened yet. Marks open up on the day.</p>'; }
+  html += '</section>';
+
+  var due = [];
+  for (var h = 0; h < state.habits.length; h++) {
+    if (habitScheduled(state.habits[h], sel)) { due.push(state.habits[h]); }
+  }
+  var doneCount = 0;
+  for (var q = 0; q < due.length; q++) {
+    if (habitDone(ui.sel, due[q].id)) { doneCount = doneCount + 1; }
+  }
+  html += '<section class="section"><div class="sec-h"><h2>Habits</h2>';
+  if (due.length > 0) { html += '<span class="cnt">' + doneCount + ' of ' + due.length + ' done</span>'; }
+  html += '</div>';
+  if (state.habits.length === 0) {
+    html += '<p class="empty">No habits yet. Pick a few in the Habits tab.</p>';
+  } else if (due.length === 0) {
+    html += '<p class="empty">No habits scheduled for this day.</p>';
+  }
+  for (var r = 0; r < due.length; r++) {
+    var hab = due[r];
+    var isDone = habitDone(ui.sel, hab.id);
+    var cls2 = "check";
+    if (isDone) { cls2 += " done"; }
+    var dis = "";
+    if (future) { dis = " disabled"; }
+    html += '<div class="row"><button class="' + cls2 + '" data-act="toggleHabit" data-id="' + hab.id + '" aria-pressed="' + isDone + '" aria-label="' + esc(hab.name) + '"' + dis + '>' + CHECK_SVG + '</button>';
+    html += '<div class="grow"><div class="name">' + esc(hab.name) + '</div></div>';
+    html += '<div class="streak"><b>' + habitStreak(hab) + '</b>day streak</div></div>';
+  }
+  html += '</section>';
+  return html;
+}
+
+/* ---------- Mentor tab ---------- */
+function renderMentor() {
+  var brief = buildBriefing();
+  var html = '<section class="section" style="margin-top:6px"><div class="sec-h"><h2>Briefing</h2><span class="cnt">' + capital(brief.word) + '</span></div>';
+  html += '<h1 class="greet" style="margin-top:12px">' + esc(brief.greeting) + '</h1>';
+  html += renderNotes(brief.notes, 0) + '</section>';
+
+  html += '<section class="section"><div class="sec-h"><h2>Where each course stands</h2><span class="cnt">target ' + state.target + '%</span></div>';
+  var list = sortedStats();
+  for (var i = 0; i < list.length; i++) {
+    var st = list[i];
+    html += '<div class="row"><div class="grow"><div class="name">' + swatch(st.sub.id) + esc(st.sub.short) + '</div><div class="sub">' + esc(nowText(st)) + '</div></div>';
+    html += '<div style="text-align:right">';
+    if (st.pct === null) { html += '<div class="pct">--</div>'; } else { html += '<div class="pct">' + st.pct + '<small>%</small></div>'; }
+    html += pillFor(st.level, levelLabel(st)) + '</div></div>';
+  }
+  html += '</section>';
+
+  html += '<section class="section"><div class="sec-h"><h2>Chat with your mentor</h2></div>';
+  if (!ui.ask.available) {
+    html += '<p class="empty">Asking questions works when this page is opened in Claude. The briefing above works everywhere.</p>';
+  } else {
+    html += '<div class="chips" style="margin-top:12px">';
+    var ideas = BOT_CHIPS;
+    for (var k = 0; k < ideas.length; k++) {
+      html += '<button class="chip" data-act="askIdea" data-q="' + esc(ideas[k]) + '">' + esc(ideas[k]) + '</button>';
+    }
+    html += '</div>';
+    html += '<label class="f" for="askBox">Your question</label>';
+    html += '<input type="text" id="askBox" maxlength="300" placeholder="Ask about your classes, habits or week">';
+    var dis = "";
+    if (ui.ask.busy) { dis = " disabled"; }
+    html += '<div class="btn-row" style="margin-top:12px"><button class="btn primary" data-act="ask"' + dis + '>' + (ui.ask.busy ? "Thinking..." : "Ask") + '</button>';
+    if (ui.ask.busy) { html += '<button class="btn quiet" data-act="askStop">Stop</button>'; }
+    html += '</div>';
+    for (var m = ui.ask.items.length - 1; m >= 0; m--) {
+      var item = ui.ask.items[m];
+      html += '<div class="qa"><div class="q">' + esc(item.q) + '</div><div class="a" id="ans' + m + '">' + esc(item.a) + '</div></div>';
+    }
+    html += '<p class="hint">Answers come from your numbers, timetable and the SR University calendar. Works offline.</p>';
+  }
+  html += '</section>';
+  return html;
+}
+
+/* ---------- Habits tab ---------- */
+function renderHabits() {
+  var t = today();
+  var html = '<section class="section" style="margin-top:6px"><div class="sec-h"><h2>Last 5 weeks</h2><span class="cnt">share of habits done per day</span></div>';
+  html += '<div class="heat">';
+  for (var n = 0; n < 7; n++) { html += '<span class="hd">' + DAY_LETTER[DAY_ORDER[n]] + '</span>'; }
+  var start = addDays(startOfWeek(t), -28);
+  for (var i = 0; i < 35; i++) {
+    var d = addDays(start, i);
+    var k = dateKey(d);
+    var c = dayHabitCount(d);
+    var cls = "";
+    if (k > dateKey(t)) { cls = "future"; }
+    else if (c.due === 0) { cls = "none"; }
+    else if (c.done === 0) { cls = ""; }
+    else if (c.done * 2 < c.due) { cls = "l1"; }
+    else if (c.done < c.due) { cls = "l2"; }
+    else { cls = "l3"; }
+    html += '<i class="' + cls + '" title="' + niceDate(d) + '"></i>';
+  }
+  html += '</div></section>';
+
+  html += '<section class="section"><div class="sec-h"><h2>Your habits</h2><span class="cnt">' + state.habits.length + '</span></div>';
+  if (state.habits.length === 0) {
+    html += '<p class="empty">No habits yet. Start with two or three you can keep every day. Tap one to add it, or write your own.</p>';
+    html += '<div class="chips">';
+    for (var q = 0; q < HABIT_IDEAS.length; q++) {
+      html += '<button class="chip" data-act="quickHabit" data-name="' + esc(HABIT_IDEAS[q]) + '">' + esc(HABIT_IDEAS[q]) + '</button>';
+    }
+    html += '</div>';
+  }
+  for (var j = 0; j < state.habits.length; j++) {
+    var h = state.habits[j];
+    html += '<div class="row pressable" data-act="editHabit" data-id="' + h.id + '" role="button" tabindex="0"><div class="grow">';
+    html += '<div class="name">' + esc(h.name) + '</div><div class="sub">' + scheduleText(h.days);
+    var rate = habitRate(h, 30);
+    if (rate !== null) { html += ' &middot; ' + rate + '% over 30 days'; }
+    html += '</div><div class="dots">';
+    for (var back = 13; back >= 0; back--) {
+      var day = addDays(t, -back);
+      if (!habitScheduled(h, day)) { html += '<i class="off"></i>'; }
+      else if (habitDone(dateKey(day), h.id)) { html += '<i class="d1"></i>'; }
+      else { html += '<i class="d0"></i>'; }
+    }
+    html += '</div></div><div class="streak"><b>' + habitStreak(h) + '</b>day streak</div></div>';
+  }
+  html += '<div class="add-bar"><button class="btn primary block" data-act="addHabit">Add a habit</button></div></section>';
+  return html;
+}
+
+/* ---------- Timetable tab ---------- */
+function slotRow(slot) {
+  var html = '<div class="row pressable" data-act="editSlot" data-id="' + slot.id + '" role="button" tabindex="0">';
+  html += '<div class="time" style="width:76px;flex:none">' + nice12(slot.start).replace(" ", "&nbsp;") + '<br>' + nice12(slot.end).replace(" ", "&nbsp;") + '</div>';
+  html += '<div class="grow"><div class="name">' + swatch(slot.sub) + esc(slotName(slot)) + '</div>';
+  html += '<div class="sub"><span class="tag">' + esc(kindLabel(slot)) + '</span>' + esc(slot.teacher) + '</div>';
+  if (slot.room) { html += '<div class="sub">' + esc(slot.room) + '</div>'; }
+  html += '</div></div>';
+  return html;
+}
+function renderTimetable() {
+  var html = '<section class="section" style="margin-top:6px"><div class="sec-h"><h2>Weekly timetable</h2><span class="cnt">' + state.slots.length + ' slots</span></div>';
+  html += '<div class="chips" style="margin-top:12px">';
+  var allCls = "chip";
+  if (ui.ttDay === "all") { allCls += " on"; }
+  html += '<button class="' + allCls + '" data-act="ttDay" data-day="all">Full week</button>';
+  for (var i = 0; i < DAY_ORDER.length; i++) {
+    var dn = DAY_ORDER[i];
+    var cls = "chip";
+    if (ui.ttDay === dn) { cls += " on"; }
+    html += '<button class="' + cls + '" data-act="ttDay" data-day="' + dn + '">' + DAY_SHORT[dn] + '<small>' + slotsOnDay(dn).length + '</small></button>';
+  }
+  html += '</div>';
+  var days = [];
+  if (ui.ttDay === "all") { days = DAY_ORDER; } else { days = [ui.ttDay]; }
+  for (var j = 0; j < days.length; j++) {
+    var slots = slotsOnDay(days[j]);
+    if (ui.ttDay === "all" && slots.length === 0) { continue; }
+    if (ui.ttDay === "all") { html += '<h3 class="day-h">' + DAY_LONG[days[j]] + '</h3>'; }
+    if (slots.length === 0) { html += '<p class="empty">No slots on ' + DAY_LONG[days[j]] + '.</p>'; }
+    for (var s = 0; s < slots.length; s++) { html += slotRow(slots[s]); }
+  }
+  html += '<div class="add-bar"><button class="btn primary block" data-act="addSlot">Add a slot</button></div></section>';
+  return html;
+}
+
+/* ---------- Attendance tab ---------- */
+function renderAttendance() {
+  var o = overallStats();
+  var level = "none";
+  var label = "No data";
+  if (o.run.kind === "short") { level = "bad"; label = "Below " + state.target + "%"; }
+  else if (o.run.kind === "safe") { level = "good"; label = "Safe"; if (o.run.n <= 2) { level = "warn"; label = "Tight"; } }
+  var html = '<section class="card" style="margin-top:6px"><div class="att-top"><div><div class="mono muted" style="font-size:12px">OVERALL ATTENDANCE</div>';
+  if (o.pct === null) { html += '<div class="pct">--</div>'; } else { html += '<div class="pct">' + (Math.round((o.att * 10000) / o.held) / 100) + '<small>%</small></div>'; }
+  html += '</div><div class="counts">' + o.att + ' present of ' + o.held + ' held<br>required ' + state.target + '%</div></div>';
+  html += '<div class="meter">';
+  if (o.pct !== null) { html += '<i class="' + level + '" style="width:' + o.pct + '%"></i>'; }
+  html += '<span class="tick" style="left:' + state.target + '%"></span></div>';
+  html += pillFor(level, label) + ' <span class="muted" style="font-size:13px">' + esc(nowText({ run: o.run })) + '</span>';
+  html += '<div class="btn-row"><button class="btn quiet" data-act="portalSync">Update from portal</button></div>';
+  if (latestBase()) {
+    html += '<p class="hint">Counts start from your portal numbers (latest sync: ' + niceDate(parseKey(latestBase())) + '). Classes you mark after that are added on top. Update from the portal now and then to stay exact.</p>';
+  }
+  html += '</section>';
+
+  html += '<section class="section"><div class="sec-h"><h2>By course, most at risk first</h2><span class="cnt">' + state.subjects.length + '</span></div>';
+  if (state.subjects.length === 0) {
+    html += '<p class="empty">No courses yet. Add each course with the counts your portal shows.</p>';
+  }
+  var list = sortedStats();
+  for (var j = 0; j < list.length; j++) {
+    var st = list[j];
+    html += '<div class="att pressable" data-act="editSubject" data-id="' + st.sub.id + '" role="button" tabindex="0">';
+    html += '<div class="att-top"><div class="name" style="font-weight:600;font-size:16px;min-width:0;overflow-wrap:anywhere">' + swatch(st.sub.id) + esc(st.sub.name) + '</div>';
+    if (st.pct === null) { html += '<div class="pct">--</div>'; } else { html += '<div class="pct">' + st.pct + '<small>%</small></div>'; }
+    html += '</div><div class="meter">';
+    if (st.pct !== null) { html += '<i class="' + st.level + '" style="width:' + st.pct + '%"></i>'; }
+    html += '<span class="tick" style="left:' + state.target + '%"></span></div>';
+    var counts = st.att + ' present of ' + st.held + ' held';
+    if (st.hasTotal) { counts += ' &middot; ' + st.remaining + ' of ' + st.total + ' left'; }
+    html += '<div class="counts" style="margin-bottom:8px">' + counts + '</div>';
+    html += pillFor(st.level, levelLabel(st)) + ' <span class="muted" style="font-size:13px">' + esc(nowText(st)) + '</span>';
+    if (endText(st)) { html += '<p class="muted" style="font-size:13px;margin-top:6px">' + esc(endText(st)) + '</p>'; }
+    html += '</div>';
+  }
+  html += '<div class="add-bar"><button class="btn primary block" data-act="addSubject">Add a course</button></div>';
+  html += '<p class="hint">Tap a course to rename it or change its totals.</p></section>';
+  return html;
+}
+
+/* ---------- put it on screen ---------- */
+function render() {
+  if (!state) { return; }
+  var html = "";
+  if (ui.tab === "day") { html = renderDay(); }
+  if (ui.tab === "mentor") { html = renderMentor(); }
+  if (ui.tab === "habits") { html = renderHabits(); }
+  if (ui.tab === "timetable") { html = renderTimetable(); }
+  if (ui.tab === "attendance") { html = renderAttendance(); }
+  document.getElementById("view").innerHTML = html;
+  var tabs = document.querySelectorAll(".tab");
+  for (var i = 0; i < tabs.length; i++) {
+    var on = tabs[i].getAttribute("data-tab") === ui.tab;
+    if (on) { tabs[i].classList.add("on"); } else { tabs[i].classList.remove("on"); }
+  }
+  var t = today();
+  document.getElementById("todayLabel").textContent = DAY_SHORT[t.getDay()] + " " + niceDate(t);
+}
+</script>
+<script>
+/* ---------- saving ---------- */
+var store = { mode: "local", doc: null, writing: false, dirty: false, timer: null, lastJson: "" };
+var sheetCtx = null;
+var toastTimer = null;
+var askFn = null;
+var COLORS = ["#8A4FE0", "#F0902B", "#E0473D", "#3B6FF0", "#22A55A", "#1496A8", "#C23B8F"];
+
+function showToast(msg) {
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.hidden = false;
+  if (toastTimer) { clearTimeout(toastTimer); }
+  toastTimer = setTimeout(function () { el.hidden = true; }, 2600);
+}
+
+function saveLocal(json) {
+  try { localStorage.setItem(LOCAL_KEY, json); } catch (e) { /* storage can be blocked */ }
+}
+function persist() {
+  store.dirty = true;
+  if (store.timer) { clearTimeout(store.timer); }
+  store.timer = setTimeout(flush, 400);
+}
+async function flush() {
+  if (store.writing || !store.dirty) { return; }
+  store.dirty = false;
+  var json = JSON.stringify(state);
+  if (store.mode !== "cloud") {
+    saveLocal(json);
+    return;
+  }
+  store.writing = true;
+  store.lastJson = json;
+  try {
+    await store.doc.set(JSON.parse(json));
+  } catch (err) {
+    saveLocal(json);
+    showToast("Could not save to your account. Kept on this device for now.");
+  }
+  store.writing = false;
+  if (store.dirty) { flush(); }
+}
+
+/* Older saves: the first version held made-up sample data. If it was never edited, swap in the real data. */
+function upgrade(s) {
+  if (s.v === DATA_VERSION) { return normalise(s); }
+  if (s.sample) { return portalState(); }
+  s = normalise(s);
+  s.v = DATA_VERSION;
+  return s;
+}
+function loadLocalOrStarter() {
+  try {
+    var raw = localStorage.getItem(LOCAL_KEY);
+    if (raw) { return upgrade(JSON.parse(raw)); }
+  } catch (e) { /* nothing saved, or blocked */ }
+  return portalState();
+}
+
+function onRemote(snap) {
+  if (!snap.exists) { return; }
+  if (snap.metadata && snap.metadata.hasPendingWrites) { return; }
+  if (store.writing || store.dirty) { return; }
+  var incoming = JSON.parse(JSON.stringify(snap.data()));
+  if (JSON.stringify(incoming) === JSON.stringify(state)) { return; }
+  state = upgrade(incoming);
+  store.lastJson = JSON.stringify(state);
+  render();
+}
+
+async function boot() {
+  var db = null;
+  var user = null;
+  var uid = null;
+  if (window.claude && window.claude.use) {
+    try {
+      db = await window.claude.use("db");
+      user = await window.claude.use("user");
+      if (db && user) { uid = await user.id(); }
+    } catch (e) { db = null; }
+    try { askFn = await window.claude.use("sample"); } catch (e2) { askFn = null; }
+  }
+  ui.ask.available = true;
+  if (db && uid) {
+    try {
+      var ref = db.doc("data/users/" + uid + "/register");
+      var snap = await ref.get();
+      store.mode = "cloud";
+      store.doc = ref;
+      if (snap.exists) {
+        var saved = JSON.parse(JSON.stringify(snap.data()));
+        state = upgrade(saved);
+        if (JSON.stringify(state) !== JSON.stringify(saved)) { persist(); }
+      } else {
+        state = loadLocalOrStarter();
+        persist();
+      }
+      store.lastJson = JSON.stringify(state);
+      ref.onSnapshot(onRemote, function () { /* live sync stopped; saving still works */ });
+    } catch (e3) {
+      store.mode = "local";
+      state = null;
+    }
+  }
+  if (!state) { state = loadLocalOrStarter(); }
+  document.getElementById("loading").hidden = true;
+  document.getElementById("view").hidden = false;
+  document.getElementById("tabs").hidden = false;
+  render();
+}
+
+function changed() {
+  render();
+  persist();
+}
+
+/* ---------- sheets (the editors) ---------- */
+function openSheet(html) {
+  document.getElementById("sheetIn").innerHTML = html;
+  document.getElementById("scrim").hidden = false;
+  document.getElementById("sheet").hidden = false;
+  document.getElementById("sheet").scrollTop = 0;
+}
+function closeSheet() {
+  document.getElementById("scrim").hidden = true;
+  document.getElementById("sheet").hidden = true;
+  sheetCtx = null;
+}
+function chip(group, value, label, on) {
+  var cls = "chip";
+  if (on) { cls += " on"; }
+  return '<button type="button" class="' + cls + '" data-act="chip" data-group="' + group + '" data-val="' + value + '" aria-pressed="' + on + '">' + label + '</button>';
+}
+function readChips(group) {
+  var els = document.querySelectorAll('.chip.on[data-group="' + group + '"]');
+  var out = [];
+  for (var i = 0; i < els.length; i++) { out.push(els[i].getAttribute("data-val")); }
+  return out;
+}
+function val(id) {
+  return document.getElementById(id).value;
+}
+function showErr(msg) {
+  var el = document.getElementById("formErr");
+  el.textContent = msg;
+  el.hidden = false;
+}
+function formErrLine() {
+  return '<p class="hint" id="formErr" style="color:var(--bad);font-weight:600" hidden></p>';
+}
+
+/* habit editor */
+function openHabitSheet(id) {
+  var h = null;
+  if (id) { h = findHabit(id); }
+  sheetCtx = { type: "habit", id: id };
+  var days = [0, 1, 2, 3, 4, 5, 6];
+  var name = "";
+  if (h) { days = h.days; name = h.name; }
+  var html = '<h2>' + (h ? "Edit habit" : "New habit") + '</h2>';
+  html += '<label class="f" for="f_name">Habit</label><input type="text" id="f_name" maxlength="60" placeholder="Read 20 minutes" value="' + esc(name) + '">';
+  html += '<label class="f">Days it counts</label><div class="chips" style="margin-top:6px">';
+  for (var i = 0; i < DAY_ORDER.length; i++) {
+    html += chip("hdays", DAY_ORDER[i], DAY_SHORT[DAY_ORDER[i]], days.indexOf(DAY_ORDER[i]) >= 0);
+  }
+  html += '</div>' + formErrLine();
+  html += '<div class="btn-row"><button class="btn primary" data-act="saveHabit">Save</button><button class="btn quiet" data-act="closeSheet">Cancel</button></div>';
+  if (h) { html += '<div class="btn-row"><button class="btn danger" data-act="deleteHabit">Delete habit</button></div>'; }
+  openSheet(html);
+}
+function saveHabit() {
+  var name = val("f_name").trim();
+  var days = [];
+  var picked = readChips("hdays");
+  for (var i = 0; i < picked.length; i++) { days.push(Number(picked[i])); }
+  if (name === "") { showErr("Give the habit a name."); return; }
+  if (days.length === 0) { showErr("Pick at least one day."); return; }
+  if (sheetCtx.id) {
+    var h = findHabit(sheetCtx.id);
+    h.name = name;
+    h.days = days;
+  } else {
+    state.habits.push({ id: newId("h"), name: name, days: days, created: dateKey(today()) });
+  }
+  closeSheet();
+  changed();
+}
+function quickHabit(name) {
+  state.habits.push({ id: newId("h"), name: name, days: [0, 1, 2, 3, 4, 5, 6], created: dateKey(today()) });
+  changed();
+  showToast("Added. Tap it to choose the days.");
+}
+function deleteHabit() {
+  var id = sheetCtx.id;
+  var keep = [];
+  for (var i = 0; i < state.habits.length; i++) {
+    if (state.habits[i].id !== id) { keep.push(state.habits[i]); }
+  }
+  state.habits = keep;
+  for (var k in state.habitLog) { addHabitLog(k, id, false); }
+  closeSheet();
+  changed();
+  showToast("Habit deleted");
+}
+
+/* timetable slot editor */
+function openSlotSheet(id) {
+  var slot = null;
+  if (id) { slot = findSlot(id); }
+  sheetCtx = { type: "slot", id: id };
+  var kind = "Lecture";
+  var start = "09:00";
+  var end = "10:00";
+  var room = "";
+  var title = "";
+  var teacher = "";
+  var span = 1;
+  var subId = "";
+  var dayList = [];
+  if (ui.ttDay === "all") { dayList = [1]; } else { dayList = [ui.ttDay]; }
+  if (slot) {
+    kind = slot.kind; start = slot.start; end = slot.end; room = slot.room; title = slot.title;
+    teacher = slot.teacher; span = slot.span || 1; subId = slot.sub; dayList = [slot.day];
+  }
+  var html = '<h2>' + (slot ? "Edit slot" : "New slot") + '</h2>';
+  html += '<label class="f">Type</label><div class="chips" style="margin-top:6px">';
+  for (var i = 0; i < KINDS.length; i++) { html += chip("kind", KINDS[i], KINDS[i], KINDS[i] === kind); }
+  html += '</div>';
+
+  html += '<div id="grpSub"><label class="f" for="f_sub">Course</label><select id="f_sub">';
+  for (var s = 0; s < state.subjects.length; s++) {
+    var sel = "";
+    if (state.subjects[s].id === subId) { sel = " selected"; }
+    html += '<option value="' + state.subjects[s].id + '"' + sel + '>' + esc(state.subjects[s].name) + '</option>';
+  }
+  var newSel = "";
+  if (state.subjects.length === 0) { newSel = " selected"; }
+  html += '<option value="__new"' + newSel + '>+ New course</option></select>';
+  html += '<div id="grpNewSub" hidden><label class="f" for="f_newsub">New course name</label><input type="text" id="f_newsub" maxlength="60" placeholder="Engineering Chemistry"></div>';
+  html += '<label class="f" for="f_teacher">Teacher (optional)</label><input type="text" id="f_teacher" maxlength="60" value="' + esc(teacher) + '">';
+  var spanOpts = [1, 2, 3];
+  html += '<label class="f" for="f_span">Counts as how many classes</label><select id="f_span">';
+  for (var o = 0; o < spanOpts.length; o++) {
+    var sSel = "";
+    if (spanOpts[o] === span) { sSel = " selected"; }
+    html += '<option value="' + spanOpts[o] + '"' + sSel + '>' + spanOpts[o] + '</option>';
+  }
+  html += '</select><p class="hint">A 2-hour practical counts as 2 classes, like on your portal.</p></div>';
+
+  html += '<div id="grpTitle" hidden><label class="f" for="f_title">Title</label><input type="text" id="f_title" maxlength="60" placeholder="Self study" value="' + esc(title) + '"></div>';
+
+  html += '<div class="two"><div><label class="f" for="f_start">Starts</label><input type="time" id="f_start" value="' + start + '"></div>';
+  html += '<div><label class="f" for="f_end">Ends</label><input type="time" id="f_end" value="' + end + '"></div></div>';
+  html += '<label class="f" for="f_room">Room (optional)</label><input type="text" id="f_room" maxlength="60" placeholder="Room 8008, Block 8, Ground Floor" value="' + esc(room) + '">';
+
+  var dayLabel = "Days";
+  if (slot) { dayLabel = "Day"; }
+  html += '<label class="f">' + dayLabel + '</label><div class="chips" style="margin-top:6px">';
+  for (var d = 0; d < DAY_ORDER.length; d++) {
+    html += chip("sdays", DAY_ORDER[d], DAY_SHORT[DAY_ORDER[d]], dayList.indexOf(DAY_ORDER[d]) >= 0);
+  }
+  html += '</div>';
+  if (!slot) { html += '<p class="hint">Pick several days to repeat the same slot.</p>'; }
+  html += formErrLine();
+  html += '<div class="btn-row"><button class="btn primary" data-act="saveSlot">Save</button><button class="btn quiet" data-act="closeSheet">Cancel</button></div>';
+  if (slot) { html += '<div class="btn-row"><button class="btn danger" data-act="deleteSlot">Delete slot</button></div>'; }
+  openSheet(html);
+  syncSlotFields();
+}
+function syncSlotFields() {
+  var kind = readChips("kind")[0];
+  var personal = kind === "Personal";
+  document.getElementById("grpSub").hidden = personal;
+  document.getElementById("grpTitle").hidden = !personal;
+  if (!personal) {
+    document.getElementById("grpNewSub").hidden = val("f_sub") !== "__new";
+  }
+}
+function saveSlot() {
+  var kind = readChips("kind")[0];
+  var start = val("f_start");
+  var end = val("f_end");
+  var room = val("f_room").trim();
+  var picked = readChips("sdays");
+  var days = [];
+  for (var i = 0; i < picked.length; i++) { days.push(Number(picked[i])); }
+  var title = "";
+  var teacher = "";
+  var span = 1;
+  var newName = "";
+  var subId = "";
+
+  if (!start || !end) { showErr("Set a start and an end time."); return; }
+  if (end <= start) { showErr("The end time must be after the start time."); return; }
+  if (days.length === 0) { showErr("Pick at least one day."); return; }
+  if (kind === "Personal") {
+    title = val("f_title").trim();
+    if (title === "") { showErr("Give this slot a title."); return; }
+  } else {
+    teacher = val("f_teacher").trim();
+    span = parseInt(val("f_span"), 10);
+    if (isNaN(span) || span < 1) { span = 1; }
+    subId = val("f_sub");
+    if (subId === "__new") {
+      newName = val("f_newsub").trim();
+      if (newName === "") { showErr("Type the new course's name."); return; }
+    }
+  }
+  if (newName !== "") { subId = addSubject(newName, newName, 0, 0, 0, dateKey(today())); }
+
+  if (sheetCtx.id) {
+    var slot = findSlot(sheetCtx.id);
+    slot.kind = kind; slot.start = start; slot.end = end; slot.room = room; slot.teacher = teacher;
+    slot.span = span; slot.title = title; slot.sub = subId; slot.day = days[0];
+  } else {
+    for (var d = 0; d < days.length; d++) {
+      state.slots.push({ id: newId("s"), day: days[d], start: start, end: end, kind: kind, sub: subId, span: span, title: title, teacher: teacher, room: room });
+    }
+  }
+  if (ui.ttDay !== "all") { ui.ttDay = days[0]; }
+  closeSheet();
+  changed();
+}
+function deleteSlot() {
+  var id = sheetCtx.id;
+  var keep = [];
+  for (var i = 0; i < state.slots.length; i++) {
+    if (state.slots[i].id !== id) { keep.push(state.slots[i]); }
+  }
+  state.slots = keep;
+  closeSheet();
+  changed();
+  showToast("Slot deleted. Past marks still count.");
+}
+
+/* course editor */
+function addSubject(name, short, total, held, att, asof) {
+  var id = newId("u");
+  var color = COLORS[state.subjects.length % COLORS.length];
+  state.subjects.push({ id: id, name: name, short: short, color: color, total: total, baseHeld: held, baseAttended: att, baseDate: asof });
+  return id;
+}
+function openSubjectSheet(id) {
+  var s = null;
+  if (id) { s = findSubject(id); }
+  sheetCtx = { type: "subject", id: id };
+  var asof = dateKey(today());
+  if (s) { asof = s.baseDate || asof; }
+  var html = '<h2>' + (s ? "Edit course" : "New course") + '</h2>';
+  html += '<label class="f" for="f_name">Course name</label><input type="text" id="f_name" maxlength="70" placeholder="Engineering Chemistry" value="' + esc(s ? s.name : "") + '">';
+  html += '<label class="f" for="f_short">Short name</label><input type="text" id="f_short" maxlength="20" placeholder="Chemistry" value="' + esc(s ? s.short : "") + '">';
+  html += '<label class="f" for="f_total">Total classes this semester</label><input type="number" id="f_total" min="0" step="1" inputmode="numeric" value="' + (s ? s.total : 0) + '">';
+  html += '<div class="two"><div><label class="f" for="f_held">Held so far</label><input type="number" id="f_held" min="0" step="1" inputmode="numeric" value="' + (s ? s.baseHeld : 0) + '"></div>';
+  html += '<div><label class="f" for="f_att">Present so far</label><input type="number" id="f_att" min="0" step="1" inputmode="numeric" value="' + (s ? s.baseAttended : 0) + '"></div></div>';
+  html += '<label class="f" for="f_asof">Counts are as of</label><input type="date" id="f_asof" value="' + asof + '">';
+  html += '<p class="hint">On your portal these are the LTP Cls, Held Cls and PR columns. The date is the last day those numbers include. Classes you mark after it are added on top.</p>';
+  html += formErrLine();
+  html += '<div class="btn-row"><button class="btn primary" data-act="saveSubject">Save</button><button class="btn quiet" data-act="closeSheet">Cancel</button></div>';
+  if (s) { html += '<div class="btn-row"><button class="btn danger" data-act="deleteSubject">Delete course</button></div>'; }
+  openSheet(html);
+}
+function readCount(id) {
+  return parseInt(val(id), 10);
+}
+function saveSubject() {
+  var name = val("f_name").trim();
+  var short = val("f_short").trim();
+  var total = readCount("f_total");
+  var held = readCount("f_held");
+  var att = readCount("f_att");
+  var asof = val("f_asof");
+  if (short === "") { short = name; }
+  if (name === "") { showErr("Give the course a name."); return; }
+  if (isNaN(total) || isNaN(held) || isNaN(att) || total < 0 || held < 0 || att < 0) { showErr("Counts must be whole numbers, zero or more."); return; }
+  if (att > held) { showErr("Present cannot be more than held."); return; }
+  if (total > 0 && held > total) { showErr("Held cannot be more than the semester total."); return; }
+  if (asof === "") { asof = dateKey(today()); }
+  if (sheetCtx.id) {
+    var s = findSubject(sheetCtx.id);
+    s.name = name; s.short = short; s.total = total; s.baseHeld = held; s.baseAttended = att; s.baseDate = asof;
+  } else {
+    addSubject(name, short, total, held, att, asof);
+  }
+  closeSheet();
+  changed();
+}
+function deleteSubject() {
+  var id = sheetCtx.id;
+  var keepSubs = [];
+  for (var i = 0; i < state.subjects.length; i++) {
+    if (state.subjects[i].id !== id) { keepSubs.push(state.subjects[i]); }
+  }
+  state.subjects = keepSubs;
+  var keepSlots = [];
+  for (var j = 0; j < state.slots.length; j++) {
+    if (state.slots[j].sub !== id) { keepSlots.push(state.slots[j]); }
+  }
+  state.slots = keepSlots;
+  for (var key in state.attLog) {
+    var day = state.attLog[key];
+    for (var slotId in day) {
+      if (parseEntry(day[slotId]).sub === id) { delete day[slotId]; }
+    }
+    if (Object.keys(day).length === 0) { delete state.attLog[key]; }
+  }
+  closeSheet();
+  changed();
+  showToast("Course deleted");
+}
+</script>
+<script>
+/* ---------- update from the portal ---------- */
+function openPortalSheet() {
+  sheetCtx = { type: "portal" };
+  var html = '<h2>Update from portal</h2>';
+  html += '<p class="hint">Open the portal\'s Course Wise Attendance page and copy Held Cls and PR for each course.</p>';
+  var counts = allCounts();
+  for (var i = 0; i < state.subjects.length; i++) {
+    var s = state.subjects[i];
+    var c = counts[s.id];
+    html += '<div style="margin-top:14px"><div class="name" style="font-weight:600">' + swatch(s.id) + esc(s.name) + '</div>';
+    html += '<div class="two"><div><label class="f" for="p_held_' + s.id + '">Held</label><input type="number" id="p_held_' + s.id + '" min="0" step="1" inputmode="numeric" value="' + c.held + '"></div>';
+    html += '<div><label class="f" for="p_att_' + s.id + '">Present</label><input type="number" id="p_att_' + s.id + '" min="0" step="1" inputmode="numeric" value="' + c.att + '"></div></div></div>';
+  }
+  var asof = dateKey(addDays(today(), -1));
+  html += '<label class="f" for="p_asof">Portal counts include classes up to</label><input type="date" id="p_asof" value="' + asof + '">';
+  html += '<p class="hint">If your portal already shows today\'s classes, pick today. Classes you mark after this date are added on top.</p>';
+  html += formErrLine();
+  html += '<div class="btn-row"><button class="btn primary" data-act="savePortal">Save</button><button class="btn quiet" data-act="closeSheet">Cancel</button></div>';
+  openSheet(html);
+}
+function savePortal() {
+  var asof = val("p_asof");
+  if (asof === "") { showErr("Pick the last day the portal counts include."); return; }
+  var entered = [];
+  for (var i = 0; i < state.subjects.length; i++) {
+    var s = state.subjects[i];
+    var held = readCount("p_held_" + s.id);
+    var att = readCount("p_att_" + s.id);
+    if (isNaN(held) || isNaN(att) || held < 0 || att < 0) { showErr(s.short + ": counts must be whole numbers, zero or more."); return; }
+    if (att > held) { showErr(s.short + ": present cannot be more than held."); return; }
+    entered.push({ held: held, att: att });
+  }
+  for (var j = 0; j < state.subjects.length; j++) {
+    state.subjects[j].baseHeld = entered[j].held;
+    state.subjects[j].baseAttended = entered[j].att;
+    state.subjects[j].baseDate = asof;
+  }
+  closeSheet();
+  changed();
+  var o = overallStats();
+  showToast("Updated. Overall is " + (Math.round((o.att * 10000) / o.held) / 100) + "%. Check it against the portal.");
+}
+
+/* ---------- settings ---------- */
+function openSettingsSheet() {
+  sheetCtx = { type: "settings" };
+  var html = '<h2>Settings</h2>';
+  html += '<label class="f" for="f_myname">Your name</label><input type="text" id="f_myname" maxlength="30" value="' + esc(state.name) + '">';
+  html += '<label class="f" for="f_target">Required attendance (%)</label><input type="number" id="f_target" min="1" max="100" step="1" inputmode="numeric" value="' + state.target + '">';
+  html += '<p class="hint">Your college asks for 75% minimum. Every warning in the app uses this number.</p>';
+  html += '<label class="f" for="f_makeup">Mid-term make-up test (26 Oct to 2 Nov)</label><select id="f_makeup"><option value="0"' + (state.makeup ? '' : ' selected') + '>I am not taking one. Normal classes</option><option value="1"' + (state.makeup ? ' selected' : '') + '>I am taking one. Skip my 9 to 11 AM classes</option></select>';
+  if (store.mode === "cloud") {
+    html += '<p class="hint"><b>Saved to your account.</b> It stays in sync across your devices.</p>';
+  } else {
+    html += '<p class="hint"><b>Saved on this device only.</b> Open the page signed in to keep it with your account.</p>';
+  }
+  html += formErrLine();
+  html += '<div class="btn-row"><button class="btn primary" data-act="saveSettings">Save</button><button class="btn quiet" data-act="closeSheet">Cancel</button></div>';
+  html += '<div class="btn-row"><button class="btn danger" data-act="reloadPortal">Reset timetable and attendance to my 18 Oct portal data</button></div>';
+  html += '<div class="btn-row"><button class="btn danger" data-act="eraseAll">Erase timetable, habits and attendance</button></div>';
+  openSheet(html);
+}
+function saveSettings() {
+  var target = parseInt(val("f_target"), 10);
+  if (isNaN(target) || target < 1 || target > 100) { showErr("The target must be between 1 and 100."); return; }
+  state.name = val("f_myname").trim();
+  state.target = target;
+  state.makeup = val("f_makeup") === "1";
+  closeSheet();
+  changed();
+}
+function reloadPortal() {
+  var keep = { habits: state.habits, habitLog: state.habitLog, name: state.name, target: state.target, makeup: state.makeup };
+  portalState();
+  state.habits = keep.habits;
+  state.habitLog = keep.habitLog;
+  state.name = keep.name;
+  state.target = keep.target;
+  state.makeup = keep.makeup;
+  closeSheet();
+  changed();
+  showToast("Timetable and attendance reset to the 18 Oct portal data");
+}
+function eraseAll() {
+  var keepName = state.name;
+  var keepTarget = state.target;
+  var keepMk = state.makeup;
+  var n = state.nextId;
+  state = blankState();
+  state.name = keepName;
+  state.target = keepTarget;
+  state.makeup = keepMk;
+  state.nextId = n;
+  closeSheet();
+  changed();
+  showToast("All cleared");
+}
+
+/* ---------- ask your mentor ---------- */
+var askCtl = null;
+var MENTOR_RULES = [
+  "You are the personal mentor inside a first-year university student's attendance and habits app.",
+  "Use only the facts below. Never invent numbers, classes, rules or deadlines.",
+  "Be direct, warm and brief: at most 120 words, plain sentences, no markdown, no emojis.",
+  "The student must keep every course at or above the required attendance. Before ever saying a class can be skipped, say how many spare classes the course has left. Do not help hide or fake attendance.",
+  "When asked for a plan, give a short ordered plan using the real class times and habits in the facts.",
+  "If the question is outside studies, attendance, habits or routine, answer briefly or say it is outside what you can see."
+].join("\n");
+
+function askErrorText(code) {
+  if (code === "rate_limited") { return "Too many questions, or your Claude usage limit is reached. Try again in a while."; }
+  if (code === "session_expired") { return "Sign in to Claude again, then ask once more."; }
+  return "Could not get an answer right now. Try again.";
+}
+async function askMentorLLM(question) {
+  question = question.trim();
+  if (!askFn || ui.ask.busy || question === "") { return; }
+  var item = { q: question, a: "Thinking...", ok: false };
+  var earlier = ui.ask.items.slice(-3);
+  ui.ask.items.push(item);
+  ui.ask.busy = true;
+  render();
+
+  var messages = [{ role: "user", content: MENTOR_RULES + "\n\nFACTS:\n" + factsText() }];
+  for (var i = 0; i < earlier.length; i++) {
+    if (earlier[i].ok) {
+      messages.push({ role: "user", content: earlier[i].q });
+      messages.push({ role: "assistant", content: earlier[i].a });
+    }
+  }
+  messages.push({ role: "user", content: question });
+
+  var spot = ui.ask.items.length - 1;
+  askCtl = new AbortController();
+  try {
+    var result = await askFn(messages, {
+      cache: false,
+      signal: askCtl.signal,
+      onText: function (update) {
+        item.a = update.text;
+        var el = document.getElementById("ans" + spot);
+        if (el) { el.textContent = update.text; }
+      }
+    });
+    item.a = result.text;
+    item.ok = true;
+  } catch (err) {
+    var code = "";
+    if (err && err.code) { code = err.code; }
+    if (code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled" || code === "capability_removed") {
+      ui.ask.available = false;
+    }
+    if (code === "cancelled") {
+      if (err.text) { item.a = err.text + "\n\n(Stopped.)"; } else { item.a = "Stopped."; }
+    } else if (err && err.text) {
+      item.a = err.text + "\n\n(Interrupted. " + askErrorText(code) + ")";
+    } else {
+      item.a = askErrorText(code);
+    }
+  }
+  askCtl = null;
+  ui.ask.busy = false;
+  render();
+}
+
+/* ---------- taps ---------- */
+function armedDelete(btn) {
+  /* destructive buttons need a second tap */
+  if (btn.getAttribute("data-armed") === "1") { return true; }
+  btn.setAttribute("data-armed", "1");
+  btn.textContent = "Tap again to confirm";
+  return false;
+}
+
+function onClick(e) {
+  var el = e.target.closest("[data-act]");
+  if (!el) { return; }
+  var act = el.getAttribute("data-act");
+
+  if (act === "tab") { ui.tab = el.getAttribute("data-tab"); render(); window.scrollTo(0, 0); }
+  else if (act === "settings") { openSettingsSheet(); }
+  else if (act === "closeSheet") { closeSheet(); }
+  else if (act === "pickDay") { ui.sel = el.getAttribute("data-date"); render(); }
+  else if (act === "weekShift") { ui.sel = dateKey(addDays(parseKey(ui.sel), Number(el.getAttribute("data-n")))); render(); }
+  else if (act === "goToday") { ui.sel = dateKey(today()); render(); }
+  else if (act === "mark") {
+    setMark(ui.sel, findSlot(el.getAttribute("data-slot")), el.getAttribute("data-mark"));
+    changed();
+  }
+  else if (act === "toggleHabit") {
+    var hid = el.getAttribute("data-id");
+    addHabitLog(ui.sel, hid, !habitDone(ui.sel, hid));
+    changed();
+  }
+  else if (act === "ttDay") {
+    var dv = el.getAttribute("data-day");
+    if (dv === "all") { ui.ttDay = "all"; } else { ui.ttDay = Number(dv); }
+    render();
+  }
+  else if (act === "addHabit") { openHabitSheet(null); }
+  else if (act === "editHabit") { openHabitSheet(el.getAttribute("data-id")); }
+  else if (act === "quickHabit") { quickHabit(el.getAttribute("data-name")); }
+  else if (act === "addSlot") { openSlotSheet(null); }
+  else if (act === "editSlot") { openSlotSheet(el.getAttribute("data-id")); }
+  else if (act === "addSubject") { openSubjectSheet(null); }
+  else if (act === "editSubject") { openSubjectSheet(el.getAttribute("data-id")); }
+  else if (act === "portalSync") { openPortalSheet(); }
+  else if (act === "ask") { askMentor(document.getElementById("askBox").value); }
+  else if (act === "askIdea") { askMentor(el.getAttribute("data-q")); }
+  else if (act === "askStop") { if (askCtl) { askCtl.abort(); } }
+  else if (act === "chip") {
+    var group = el.getAttribute("data-group");
+    var multi = (group === "hdays" || (group === "sdays" && sheetCtx && !sheetCtx.id));
+    if (multi) {
+      el.classList.toggle("on");
+    } else {
+      var same = document.querySelectorAll('.chip[data-group="' + group + '"]');
+      for (var i = 0; i < same.length; i++) { same[i].classList.remove("on"); same[i].setAttribute("aria-pressed", "false"); }
+      el.classList.add("on");
+    }
+    el.setAttribute("aria-pressed", el.classList.contains("on") ? "true" : "false");
+    if (group === "kind") { syncSlotFields(); }
+  }
+  else if (act === "saveHabit") { saveHabit(); }
+  else if (act === "saveSlot") { saveSlot(); }
+  else if (act === "saveSubject") { saveSubject(); }
+  else if (act === "savePortal") { savePortal(); }
+  else if (act === "saveSettings") { saveSettings(); }
+  else if (act === "deleteHabit") { if (armedDelete(el)) { deleteHabit(); } }
+  else if (act === "deleteSlot") { if (armedDelete(el)) { deleteSlot(); } }
+  else if (act === "deleteSubject") { if (armedDelete(el)) { deleteSubject(); } }
+  else if (act === "reloadPortal") { if (armedDelete(el)) { reloadPortal(); } }
+  else if (act === "eraseAll") { if (armedDelete(el)) { eraseAll(); } }
+}
+
+function onKey(e) {
+  if (e.key === "Escape" && sheetCtx) { closeSheet(); return; }
+  if (e.key === "Enter" && e.target && e.target.id === "askBox") {
+    e.preventDefault();
+    askMentor(e.target.value);
+    return;
+  }
+  if (e.key === "Enter" || e.key === " ") {
+    var el = e.target;
+    if (el && el.getAttribute && el.getAttribute("role") === "button") {
+      e.preventDefault();
+      el.click();
+    }
+  }
+}
+function onChange(e) {
+  if (e.target && e.target.id === "f_sub") { syncSlotFields(); }
+}
+
+document.addEventListener("click", onClick);
+document.addEventListener("keydown", onKey);
+document.addEventListener("change", onChange);
+boot();
+</script>
+
+</body></html>
